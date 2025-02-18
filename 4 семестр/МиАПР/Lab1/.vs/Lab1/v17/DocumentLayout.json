@@ -1,0 +1,70 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{56854342-D12F-47AB-8325-017ED4A1E102}|Lab1\\Lab1.csproj|D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\lab1\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56854342-D12F-47AB-8325-017ED4A1E102}|Lab1\\Lab1.csproj|solutionrelative:lab1\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F6220EAB-4220-4B05-8B86-2E715CB8FFB2}|KMeans\\KMeans.csproj|D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\kmeans\\kmeans.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F6220EAB-4220-4B05-8B86-2E715CB8FFB2}|KMeans\\KMeans.csproj|solutionrelative:kmeans\\kmeans.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56854342-D12F-47AB-8325-017ED4A1E102}|Lab1\\Lab1.csproj|d:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u043C\u0438\u0430\u043F\u0440\\lab1\\lab1\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{56854342-D12F-47AB-8325-017ED4A1E102}|Lab1\\Lab1.csproj|solutionrelative:lab1\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\Lab1\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "Lab1\\MainWindow.xaml",
+              "ToolTip": "D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\Lab1\\MainWindow.xaml",
+              "RelativeToolTip": "Lab1\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-02-16T12:07:00.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "KMeans.cs",
+              "DocumentMoniker": "D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\KMeans\\KMeans.cs",
+              "RelativeDocumentMoniker": "KMeans\\KMeans.cs",
+              "ToolTip": "D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\KMeans\\KMeans.cs",
+              "RelativeToolTip": "KMeans\\KMeans.cs",
+              "ViewState": "AQIAAE8AAAAAAAAAAAAwwGYAAAAxAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-16T11:43:08.009Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\Lab1\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "Lab1\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\4 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041C\u0438\u0410\u041F\u0420\\Lab1\\Lab1\\MainWindow.xaml.cs",
+              "RelativeToolTip": "Lab1\\MainWindow.xaml.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-16T09:40:25.983Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

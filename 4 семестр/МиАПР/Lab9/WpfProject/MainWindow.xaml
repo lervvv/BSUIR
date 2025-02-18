@@ -1,0 +1,31 @@
+﻿<Window x:Class="WpfProject.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="МиАПР 9" Height="204.975" Width="509">
+    <Grid>
+
+        <Button x:Name="ManualTeaching" Content="Начать ручное обучение" HorizontalAlignment="Left" Margin="10,10,0,0"
+                VerticalAlignment="Top" Width="181" Height="23" Click="ManualTeaching_Click" />
+        <Button x:Name="OpenReadyNetwork" Content="Загрузить обученную сеть" HorizontalAlignment="Left"
+                Margin="10,38,0,0" VerticalAlignment="Top" Width="181" Height="23" Click="OpenReadyNetwork_Click" />
+        <Button x:Name="TeachingButton" Content="Обучить" Margin="0,10,10,0" VerticalAlignment="Top" IsEnabled="False"
+                Click="TeachingButton_Click" HorizontalAlignment="Right" Width="134" />
+        <Button x:Name="ClassificationButton" Content="Классифицировать" Margin="0,66,10,0" VerticalAlignment="Top"
+                IsEnabled="False" Click="ClassificationButton_Click" HorizontalAlignment="Right" Width="134" />
+        <Label Content="Класс:" Margin="0,35,101,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="43" />
+        <TextBox x:Name="TeachingClassTextBox" Height="23" Margin="0,39,10,0" TextWrapping="Wrap"
+                 VerticalAlignment="Top" IsEnabled="False" HorizontalAlignment="Right" Width="86" />
+        <Button x:Name="LoadImageButton" Content="Открыть изображение" HorizontalAlignment="Left" Margin="195,0,0,6"
+                Width="134" IsEnabled="False" Click="LoadImageButton_Click" Height="20" VerticalAlignment="Bottom" />
+        <Border BorderBrush="Black" BorderThickness="1" Margin="196,10,171,31">
+            <Image x:Name="CurrentImage" Margin="0,0,0,0" />
+        </Border>
+        <Button x:Name="SaveNetworkButton" Content="Сохранить сеть" HorizontalAlignment="Left" Margin="10,66,0,0"
+                VerticalAlignment="Top" Width="181" Height="23" Click="SaveNetworkButton_Click" IsEnabled="False" />
+        <Label x:Name="ClassificationResultLabel" Content="Класс:" Margin="0,91,10,0" VerticalAlignment="Top"
+               RenderTransformOrigin="0.474,0.577" HorizontalAlignment="Right" Width="134" />
+        <Button x:Name="AutoTeaching" Content="Автоматическое обучение" HorizontalAlignment="Left" Margin="10,94,0,0"
+                VerticalAlignment="Top" Width="181" Height="23" Click="AutoTeaching_Click" />
+
+    </Grid>
+</Window>

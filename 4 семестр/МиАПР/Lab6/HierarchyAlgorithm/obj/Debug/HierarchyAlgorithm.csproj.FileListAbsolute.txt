@@ -1,0 +1,5 @@
+E:\Универ\5 сем\МиАПР\Работы\Lab6\HierarchyAlgorithm\bin\Debug\HierarchyAlgorithm.dll
+E:\Универ\5 сем\МиАПР\Работы\Lab6\HierarchyAlgorithm\bin\Debug\HierarchyAlgorithm.pdb
+E:\Универ\5 сем\МиАПР\Работы\Lab6\HierarchyAlgorithm\obj\Debug\HierarchyAlgorithm.dll
+E:\Универ\5 сем\МиАПР\Работы\Lab6\HierarchyAlgorithm\obj\Debug\HierarchyAlgorithm.pdb
+E:\Универ\5 сем\МиАПР\Работы\Lab6\HierarchyAlgorithm\obj\Debug\HierarchyAlgorithm.csprojResolveAssemblyReference.cache
