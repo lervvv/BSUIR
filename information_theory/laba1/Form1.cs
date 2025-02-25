@@ -1,0 +1,286 @@
+﻿using System;
+using System.Windows.Forms;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+namespace laba1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox6_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private string ColumnEncrMethod(string m, string key1, string key2)
+        {
+            //фильтрация только русских символов
+            m = new string(m.Where(IsRussianLetter).ToArray());
+            key1 = new string(key1.Where(IsRussianLetter).ToArray());
+            key2 = new string(key2.Where(IsRussianLetter).ToArray());
+            if (m == "") return "";
+            string res = m;
+
+            //с использованием key1
+            if (key1 != "") res = ColumnEncryptWithKey(res, key1);
+            //с использованием key2, если есть
+            if (key2 != "") res = ColumnEncryptWithKey(res, key2);
+            return res;
+        }
+
+        private static bool IsRussianLetter(char c)
+        {
+            return (c >= 'А' && c <= 'Я') || (c >= 'а' && c <= 'я') || c == 'Ё' || c == 'ё';
+        }
+        private static int GetRussianLetterOrder(char c)
+        {
+            c = char.ToLower(c); //к нижнему регистру
+            if (c == 'ё') return 'е' + 1; //'ё' после 'е'
+            if (c > 'е') return c + 1;
+            return (int)c;
+        }
+
+        private string ColumnEncryptWithKey(string m, string key)
+        {
+            int columns = key.Length;
+            int rows = (int)Math.Ceiling((double)m.Length / columns);
+            char[,] arr = new char[rows, columns];
+            //заполняем массив текстом m
+            for (int i = 0, k = 0; i < rows; i++)
+                for (int j = 0; j < columns; j++)
+                {
+                    if (k < m.Length)
+                    {
+                        arr[i, j] = m[k];
+                        k++;
+                    }
+                    else arr[i, j] = '\0';
+                }
+            //расставляем индексы столбцов в правильном порядке
+            int[] order = new int[columns];
+            for (int i = 0; i < columns; i++)
+            {
+                order[i] = i;
+            }
+            Array.Sort(order, (a, b) => GetRussianLetterOrder(key[a]).CompareTo(GetRussianLetterOrder(key[b])));
+
+            //формируем результат
+            StringBuilder res = new StringBuilder();
+            for (int j = 0; j < columns; j++)
+            {
+                int newcol = order[j];
+                for (int i = 0; i < rows; i++)
+                {
+                    if (arr[i, newcol] != '\0')
+                    {
+                        res.Append(arr[i, newcol]);
+                    }
+                }
+            }
+            return res.ToString();
+        } 
+
+        private void encrypt_Click(object sender, EventArgs e)
+        {
+            string m = tm1.Text;
+            string key1 = tkey1.Text;
+            string key2 = tkey2.Text;
+            tencr1.Text = ColumnEncrMethod(m, key1, key2);
+        }
+
+        private void fileread1_Click(object sender, EventArgs e)
+        {
+            string filePath = "D:\\encryption\\first_in.txt";
+            string[] fileLines = File.ReadAllLines(filePath);
+            string m = fileLines.Length > 0 ? fileLines[0] : "";
+            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
+            string key2 = fileLines.Length > 2 ? fileLines[2] : "";
+            tencr1.Text = ColumnEncrMethod(m, key1, key2);
+        }
+
+        private void save1_Click(object sender, EventArgs e)
+        {
+            string outputFilePath = "D:\\encryption\\first_out.txt";
+            File.WriteAllText(outputFilePath, tencr1.Text);
+        }
+
+        private string ColumnDencrMethod(string t, string key1, string key2)
+        {
+            //фильтрация только русских символов
+            t = new string(t.Where(IsRussianLetter).ToArray());
+            key1 = new string(key1.Where(IsRussianLetter).ToArray());
+            key2 = new string(key2.Where(IsRussianLetter).ToArray());
+            if (t == "") return "";
+            string res = t;
+
+            //с использованием key1
+            if (key1 != "") res = ColumnDecryptWithKey(res, key1);
+            //с использованием key2, если есть
+            if (key2 != "") res = ColumnDecryptWithKey(res, key2);
+            return res;
+        }
+
+        private string ColumnDecryptWithKey(string cipher, string key)
+        {
+            int columns = key.Length;
+            int rows = (int)Math.Ceiling((double)cipher.Length / columns);
+            char[,] cipherMat = new char[rows, columns];
+
+            //определяем количество пустых ячеек
+            int emptyCells = (rows * columns) - cipher.Length;
+
+            //расставляем индексы столбцов в правильном порядке
+            int[] order = new int[columns];
+            for (int i = 0; i < columns; i++)
+            {
+                order[i] = i;
+            }
+            Array.Sort(order, (a, b) => GetRussianLetterOrder(key[a]).CompareTo(GetRussianLetterOrder(key[b])));
+
+            //заполнение массива символами шифротекста по столбцам
+            int k = 0;
+            for (int z = 0; z < columns; z++)
+            {
+                int j = order[z];
+                int rowsincol = rows - (j >= columns - emptyCells ? 1 : 0);
+                for (int i = 0; i < rowsincol; i++)
+                {
+                    if (k < cipher.Length)
+                    {
+                        cipherMat[i, j] = cipher[k];
+                        k++;
+                    }
+                    else cipherMat[i, j] = '\0';
+                }                
+            }
+
+            //формирование расшифрованного результата
+            string res = "";
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < columns; j++)
+                {
+                    if (cipherMat[i, j] != '\0') res += cipherMat[i, j];
+                }
+
+            return res;
+        }
+
+        private void decrypt_Click(object sender, EventArgs e)
+        {
+            string t = tt1.Text;
+            string key1 = tkey3.Text;
+            string key2 = tkey4.Text;
+            tm2.Text = ColumnDencrMethod(t, key1, key2);
+        }
+
+        private void fileread2_Click(object sender, EventArgs e)
+        {
+            string filePath = "D:\\encryption\\first_in.txt";
+            string[] fileLines = File.ReadAllLines(filePath);
+            string t = fileLines.Length > 0 ? fileLines[0] : "";
+            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
+            string key2 = fileLines.Length > 2 ? fileLines[2] : "";
+            tm2.Text = ColumnDencrMethod(t, key1, key2);
+        }
+
+        private void save2_Click(object sender, EventArgs e)
+        {
+            string outputFilePath = "D:\\encryption\\first_out.txt";
+            File.WriteAllText(outputFilePath, tm2.Text);
+        }
+
+        private void encrypt1_Click(object sender, EventArgs e)
+        {
+            string m = tm3.Text;
+            string key1 = tkey5.Text;
+            tencr2.Text = VigenerEncrypt(m, key1);
+        }
+
+        private static string alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        private static int GetIndex(char c)
+        {
+            return alphabet.IndexOf(c);
+        }
+
+        private string VigenerEncrypt(string m, string key1)
+        {
+            m = new string(m.Where(IsRussianLetter).ToArray()).ToLower();
+            key1 = new string(key1.Where(IsRussianLetter).ToArray()).ToLower();
+            string res = "";
+            for (int i = 0; i < m.Length; i++)
+            {
+                key1 += m[i];
+                int plain = GetIndex(m[i]);
+                int key = GetIndex(key1[i]);
+                int encr = (plain + key) % 33;
+                char symbol = alphabet[encr];
+                res += symbol;
+            }
+            return res;
+        }
+
+        private void decrypt1_Click(object sender, EventArgs e)
+        {
+            string t = tt2.Text;
+            string key1 = tkey6.Text;
+            tm4.Text = VigenerDecrypt(t, key1);
+        }
+
+        private string VigenerDecrypt(string t, string key1)
+        {
+            t = new string(t.Where(IsRussianLetter).ToArray()).ToLower();
+            key1 = new string(key1.Where(IsRussianLetter).ToArray()).ToLower();
+            string res = "";
+            for (int i = 0; i < t.Length; i++)
+            {
+                int cipher = GetIndex(t[i]);
+                int key = GetIndex(key1[i]);
+                int encr = (cipher - key + 33) % 33;
+                char symbol = alphabet[encr];
+                res += symbol;
+                key1 += symbol;
+            }
+            return res;
+        }
+
+        private void fileread3_Click(object sender, EventArgs e)
+        {
+            string filePath = "D:\\encryption\\second_in.txt";
+            string[] fileLines = File.ReadAllLines(filePath);
+            string m = fileLines.Length > 0 ? fileLines[0] : "";
+            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
+            tencr2.Text = VigenerEncrypt(m, key1);
+        }
+
+        private void fileread4_Click(object sender, EventArgs e)
+        {
+            string filePath = "D:\\encryption\\second_in.txt";
+            string[] fileLines = File.ReadAllLines(filePath);
+            string t = fileLines.Length > 0 ? fileLines[0] : "";
+            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
+            tm4.Text = VigenerDecrypt(t, key1);
+        }
+
+        private void save3_Click(object sender, EventArgs e)
+        {
+            string outputFilePath = "D:\\encryption\\second_out.txt";
+            File.WriteAllText(outputFilePath, tencr2.Text);
+        }
+
+        private void save4_Click(object sender, EventArgs e)
+        {
+            string outputFilePath = "D:\\encryption\\second_out.txt";
+            File.WriteAllText(outputFilePath, tm4.Text);
+        }
+    }
+}
