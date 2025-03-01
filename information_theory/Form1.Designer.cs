@@ -188,11 +188,11 @@
             // 
             // fileread1
             // 
-            this.fileread1.Location = new System.Drawing.Point(329, 207);
+            this.fileread1.Location = new System.Drawing.Point(302, 260);
             this.fileread1.Name = "fileread1";
-            this.fileread1.Size = new System.Drawing.Size(182, 103);
+            this.fileread1.Size = new System.Drawing.Size(209, 50);
             this.fileread1.TabIndex = 17;
-            this.fileread1.Text = "Зашифровать по данным из файла";
+            this.fileread1.Text = "Прочитать файл";
             this.fileread1.UseVisualStyleBackColor = true;
             this.fileread1.Click += new System.EventHandler(this.fileread1_Click);
             // 
@@ -233,11 +233,11 @@
             // 
             // fileread2
             // 
-            this.fileread2.Location = new System.Drawing.Point(323, 214);
+            this.fileread2.Location = new System.Drawing.Point(302, 267);
             this.fileread2.Name = "fileread2";
-            this.fileread2.Size = new System.Drawing.Size(188, 103);
+            this.fileread2.Size = new System.Drawing.Size(209, 50);
             this.fileread2.TabIndex = 27;
-            this.fileread2.Text = "Расшифровать по данным из файла";
+            this.fileread2.Text = "Прочитать файл";
             this.fileread2.UseVisualStyleBackColor = true;
             this.fileread2.Click += new System.EventHandler(this.fileread2_Click);
             // 
@@ -249,7 +249,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(163, 25);
             this.label6.TabIndex = 26;
-            this.label6.Text = "Введите ключ2";
+            this.label6.Text = "Введите ключ1";
             // 
             // tkey4
             // 
@@ -283,7 +283,7 @@
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(163, 25);
             this.label12.TabIndex = 22;
-            this.label12.Text = "Введите ключ1";
+            this.label12.Text = "Введите ключ2";
             // 
             // tkey3
             // 
@@ -371,11 +371,11 @@
             // 
             // fileread4
             // 
-            this.fileread4.Location = new System.Drawing.Point(1196, 211);
+            this.fileread4.Location = new System.Drawing.Point(1182, 264);
             this.fileread4.Name = "fileread4";
-            this.fileread4.Size = new System.Drawing.Size(188, 103);
+            this.fileread4.Size = new System.Drawing.Size(205, 50);
             this.fileread4.TabIndex = 50;
-            this.fileread4.Text = "Расшифровать по данным из файла";
+            this.fileread4.Text = "Прочитать файл";
             this.fileread4.UseVisualStyleBackColor = true;
             this.fileread4.Click += new System.EventHandler(this.fileread4_Click);
             // 
@@ -442,11 +442,11 @@
             // 
             // fileread3
             // 
-            this.fileread3.Location = new System.Drawing.Point(1205, 203);
+            this.fileread3.Location = new System.Drawing.Point(1182, 257);
             this.fileread3.Name = "fileread3";
-            this.fileread3.Size = new System.Drawing.Size(182, 102);
+            this.fileread3.Size = new System.Drawing.Size(205, 49);
             this.fileread3.TabIndex = 40;
-            this.fileread3.Text = "Зашифровать по данным из файла";
+            this.fileread3.Text = "Прочитать файл";
             this.fileread3.UseVisualStyleBackColor = true;
             this.fileread3.Click += new System.EventHandler(this.fileread3_Click);
             // 

@@ -112,25 +112,27 @@ namespace laba1
                     tm1.Text = m;
                     tkey1.Text = key1;
                     tkey2.Text = key2;
-                    tencr1.Text = ColumnEncrMethod(m, key1, key2);
                 }
             }
         }
 
-
         private void save1_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            if (tencr1.Text != "")
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
-                openFileDialog.Title = "Выберите файл для сохранения";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string filePath = openFileDialog.FileName;
-                    File.WriteAllText(filePath, tencr1.Text);
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    openFileDialog.Title = "Выберите файл для сохранения";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = openFileDialog.FileName;
+                        File.WriteAllText(filePath, tencr1.Text);
+                    }
                 }
             }
+            else MessageBox.Show("У вас нет данных для сохранения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private string ColumnDencrMethod(string t, string key1, string key2)
@@ -221,24 +223,27 @@ namespace laba1
                     tt1.Text = m;
                     tkey3.Text = key1;
                     tkey4.Text = key2;
-                    tm2.Text = ColumnDencrMethod(m, key1, key2);
                 }
             }
         }
 
         private void save2_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            if (tm2.Text != "")
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
-                openFileDialog.Title = "Выберите файл для сохранения";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string filePath = openFileDialog.FileName;
-                    File.WriteAllText(filePath, tm2.Text);
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    openFileDialog.Title = "Выберите файл для сохранения";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = openFileDialog.FileName;
+                        File.WriteAllText(filePath, tm2.Text);
+                    }
                 }
             }
+            else MessageBox.Show("У вас нет данных для сохранения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void encrypt1_Click(object sender, EventArgs e)
@@ -312,7 +317,6 @@ namespace laba1
 
                     tm3.Text = m;
                     tkey5.Text = key;
-                    tencr2.Text = VigenerDecrypt(m, key);
                 }
             }
         }
@@ -334,39 +338,46 @@ namespace laba1
 
                     tt2.Text = m;
                     tkey6.Text = key;
-                    tm4.Text = VigenerDecrypt(m, key);
                 }
             }
         }
 
         private void save3_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            if (tencr2.Text != "")
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
-                openFileDialog.Title = "Выберите файл для сохранения";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string filePath = openFileDialog.FileName;
-                    File.WriteAllText(filePath, tencr2.Text);
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    openFileDialog.Title = "Выберите файл для сохранения";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = openFileDialog.FileName;
+                        File.WriteAllText(filePath, tencr2.Text);
+                    }
                 }
             }
-        }
+            else MessageBox.Show("У вас нет данных для сохранения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
         private void save4_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            if (tm4.Text != "")
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
-                openFileDialog.Title = "Выберите файл для сохранения";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string filePath = openFileDialog.FileName;
-                    File.WriteAllText(filePath, tm4.Text);
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    openFileDialog.Title = "Выберите файл для сохранения";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = openFileDialog.FileName;
+                        File.WriteAllText(filePath, tm4.Text);
+                    }
                 }
             }
+            else MessageBox.Show("У вас нет данных для сохранения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 }
