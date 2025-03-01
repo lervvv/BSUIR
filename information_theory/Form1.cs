@@ -12,16 +12,11 @@ namespace laba1
         {
             InitializeComponent();
         }
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void textBox6_TextChanged(object sender, EventArgs e)
         {
 
         }
-
         private string ColumnEncrMethod(string m, string key1, string key2)
         {
             //фильтрация только русских символов
@@ -100,18 +95,42 @@ namespace laba1
 
         private void fileread1_Click(object sender, EventArgs e)
         {
-            string filePath = "D:\\encryption\\first_in.txt";
-            string[] fileLines = File.ReadAllLines(filePath);
-            string m = fileLines.Length > 0 ? fileLines[0] : "";
-            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
-            string key2 = fileLines.Length > 2 ? fileLines[2] : "";
-            tencr1.Text = ColumnEncrMethod(m, key1, key2);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для чтения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    string[] fileLines = File.ReadAllLines(filePath);
+
+                    string m = fileLines.Length > 0 ? fileLines[0] : "";
+                    string key1 = fileLines.Length > 1 ? fileLines[1] : "";
+                    string key2 = fileLines.Length > 2 ? fileLines[2] : "";
+
+                    tm1.Text = m;
+                    tkey1.Text = key1;
+                    tkey2.Text = key2;
+                    tencr1.Text = ColumnEncrMethod(m, key1, key2);
+                }
+            }
         }
+
 
         private void save1_Click(object sender, EventArgs e)
         {
-            string outputFilePath = "D:\\encryption\\first_out.txt";
-            File.WriteAllText(outputFilePath, tencr1.Text);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для сохранения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    File.WriteAllText(filePath, tencr1.Text);
+                }
+            }
         }
 
         private string ColumnDencrMethod(string t, string key1, string key2)
@@ -185,18 +204,41 @@ namespace laba1
 
         private void fileread2_Click(object sender, EventArgs e)
         {
-            string filePath = "D:\\encryption\\first_in.txt";
-            string[] fileLines = File.ReadAllLines(filePath);
-            string t = fileLines.Length > 0 ? fileLines[0] : "";
-            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
-            string key2 = fileLines.Length > 2 ? fileLines[2] : "";
-            tm2.Text = ColumnDencrMethod(t, key1, key2);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для чтения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    string[] fileLines = File.ReadAllLines(filePath);
+
+                    string m = fileLines.Length > 0 ? fileLines[0] : "";
+                    string key1 = fileLines.Length > 1 ? fileLines[1] : "";
+                    string key2 = fileLines.Length > 2 ? fileLines[2] : "";
+
+                    tt1.Text = m;
+                    tkey3.Text = key1;
+                    tkey4.Text = key2;
+                    tm2.Text = ColumnDencrMethod(m, key1, key2);
+                }
+            }
         }
 
         private void save2_Click(object sender, EventArgs e)
         {
-            string outputFilePath = "D:\\encryption\\first_out.txt";
-            File.WriteAllText(outputFilePath, tm2.Text);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для сохранения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    File.WriteAllText(filePath, tm2.Text);
+                }
+            }
         }
 
         private void encrypt1_Click(object sender, EventArgs e)
@@ -255,32 +297,76 @@ namespace laba1
 
         private void fileread3_Click(object sender, EventArgs e)
         {
-            string filePath = "D:\\encryption\\second_in.txt";
-            string[] fileLines = File.ReadAllLines(filePath);
-            string m = fileLines.Length > 0 ? fileLines[0] : "";
-            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
-            tencr2.Text = VigenerEncrypt(m, key1);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для чтения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    string[] fileLines = File.ReadAllLines(filePath);
+
+                    string m = fileLines.Length > 0 ? fileLines[0] : "";
+                    string key = fileLines.Length > 1 ? fileLines[1] : "";
+
+                    tm3.Text = m;
+                    tkey5.Text = key;
+                    tencr2.Text = VigenerDecrypt(m, key);
+                }
+            }
         }
 
         private void fileread4_Click(object sender, EventArgs e)
         {
-            string filePath = "D:\\encryption\\second_in.txt";
-            string[] fileLines = File.ReadAllLines(filePath);
-            string t = fileLines.Length > 0 ? fileLines[0] : "";
-            string key1 = fileLines.Length > 1 ? fileLines[1] : "";
-            tm4.Text = VigenerDecrypt(t, key1);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для чтения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    string[] fileLines = File.ReadAllLines(filePath);
+
+                    string m = fileLines.Length > 0 ? fileLines[0] : "";
+                    string key = fileLines.Length > 1 ? fileLines[1] : "";
+
+                    tt2.Text = m;
+                    tkey6.Text = key;
+                    tm4.Text = VigenerDecrypt(m, key);
+                }
+            }
         }
 
         private void save3_Click(object sender, EventArgs e)
         {
-            string outputFilePath = "D:\\encryption\\second_out.txt";
-            File.WriteAllText(outputFilePath, tencr2.Text);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для сохранения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    File.WriteAllText(filePath, tencr2.Text);
+                }
+            }
         }
 
         private void save4_Click(object sender, EventArgs e)
         {
-            string outputFilePath = "D:\\encryption\\second_out.txt";
-            File.WriteAllText(outputFilePath, tm4.Text);
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                openFileDialog.Title = "Выберите файл для сохранения";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    File.WriteAllText(filePath, tm4.Text);
+                }
+            }
         }
     }
 }
