@@ -13,17 +13,14 @@ namespace laba1
             InitializeComponent();
         }
 
-        private void textBox6_TextChanged(object sender, EventArgs e)
-        {
-
-        }
         private string ColumnEncrMethod(string m, string key1, string key2)
         {
             //фильтрация только русских символов
             m = new string(m.Where(IsRussianLetter).ToArray());
             key1 = new string(key1.Where(IsRussianLetter).ToArray());
             key2 = new string(key2.Where(IsRussianLetter).ToArray());
-            if (m == "") return "";
+
+            if (m == "" || (key1 == "" && key2 == "")) return "";
             string res = m;
 
             //с использованием key1
@@ -39,8 +36,10 @@ namespace laba1
         }
         private static int GetRussianLetterOrder(char c)
         {
-            c = char.ToLower(c); //к нижнему регистру
-            if (c == 'ё') return 'е' + 1; //'ё' после 'е'
+            //приводим к нижнему регистру
+            c = char.ToLower(c);
+            //'ё' после 'е'
+            if (c == 'ё') return 'е' + 1;
             if (c > 'е') return c + 1;
             return (int)c;
         }
@@ -50,6 +49,7 @@ namespace laba1
             int columns = key.Length;
             int rows = (int)Math.Ceiling((double)m.Length / columns);
             char[,] arr = new char[rows, columns];
+
             //заполняем массив текстом m
             for (int i = 0, k = 0; i < rows; i++)
                 for (int j = 0; j < columns; j++)
@@ -61,6 +61,7 @@ namespace laba1
                     }
                     else arr[i, j] = '\0';
                 }
+
             //расставляем индексы столбцов в правильном порядке
             int[] order = new int[columns];
             for (int i = 0; i < columns; i++)
@@ -97,21 +98,18 @@ namespace laba1
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                //фильтр файлов
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                 openFileDialog.Title = "Выберите файл для чтения";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    string[] fileLines = File.ReadAllLines(filePath);
-
-                    string m = fileLines.Length > 0 ? fileLines[0] : "";
-                    string key1 = fileLines.Length > 1 ? fileLines[1] : "";
-                    string key2 = fileLines.Length > 2 ? fileLines[2] : "";
+                    string m = File.ReadAllText(filePath);
 
                     tm1.Text = m;
-                    tkey1.Text = key1;
-                    tkey2.Text = key2;
+                    tkey1.Text = "";
+                    tkey2.Text = "";
                 }
             }
         }
@@ -122,7 +120,8 @@ namespace laba1
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    //фильтр файлов
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                     openFileDialog.Title = "Выберите файл для сохранения";
 
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -141,7 +140,7 @@ namespace laba1
             t = new string(t.Where(IsRussianLetter).ToArray());
             key1 = new string(key1.Where(IsRussianLetter).ToArray());
             key2 = new string(key2.Where(IsRussianLetter).ToArray());
-            if (t == "") return "";
+            if (t == "" || (key1 == "" && key2 == "")) return "";
             string res = t;
 
             //с использованием key1
@@ -173,6 +172,7 @@ namespace laba1
             for (int z = 0; z < columns; z++)
             {
                 int j = order[z];
+                //определяем количество строк в ряду для заполнения
                 int rowsincol = rows - (j >= columns - emptyCells ? 1 : 0);
                 for (int i = 0; i < rowsincol; i++)
                 {
@@ -184,7 +184,6 @@ namespace laba1
                     else cipherMat[i, j] = '\0';
                 }                
             }
-
             //формирование расшифрованного результата
             string res = "";
             for (int i = 0; i < rows; i++)
@@ -192,7 +191,6 @@ namespace laba1
                 {
                     if (cipherMat[i, j] != '\0') res += cipherMat[i, j];
                 }
-
             return res;
         }
 
@@ -208,21 +206,18 @@ namespace laba1
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                //фильтр файлов
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; 
                 openFileDialog.Title = "Выберите файл для чтения";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    string[] fileLines = File.ReadAllLines(filePath);
-
-                    string m = fileLines.Length > 0 ? fileLines[0] : "";
-                    string key1 = fileLines.Length > 1 ? fileLines[1] : "";
-                    string key2 = fileLines.Length > 2 ? fileLines[2] : "";
+                    string m = File.ReadAllText(filePath);
 
                     tt1.Text = m;
-                    tkey3.Text = key1;
-                    tkey4.Text = key2;
+                    tkey3.Text = "";
+                    tkey4.Text = "";
                 }
             }
         }
@@ -233,7 +228,8 @@ namespace laba1
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    //фильтр файлов
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                     openFileDialog.Title = "Выберите файл для сохранения";
 
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -254,8 +250,10 @@ namespace laba1
         }
 
         private static string alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+
         private static int GetIndex(char c)
         {
+            //возвращает индекс символа в строке alphabet
             return alphabet.IndexOf(c);
         }
 
@@ -287,6 +285,7 @@ namespace laba1
         {
             t = new string(t.Where(IsRussianLetter).ToArray()).ToLower();
             key1 = new string(key1.Where(IsRussianLetter).ToArray()).ToLower();
+            if (key1 == "") return "";
             string res = "";
             for (int i = 0; i < t.Length; i++)
             {
@@ -304,19 +303,16 @@ namespace laba1
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                //фильтр файлов
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                 openFileDialog.Title = "Выберите файл для чтения";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    string[] fileLines = File.ReadAllLines(filePath);
-
-                    string m = fileLines.Length > 0 ? fileLines[0] : "";
-                    string key = fileLines.Length > 1 ? fileLines[1] : "";
+                    string m = File.ReadAllText(filePath);
 
                     tm3.Text = m;
-                    tkey5.Text = key;
                 }
             }
         }
@@ -325,19 +321,16 @@ namespace laba1
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                //фильтр файлов
+                openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                 openFileDialog.Title = "Выберите файл для чтения";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    string[] fileLines = File.ReadAllLines(filePath);
-
-                    string m = fileLines.Length > 0 ? fileLines[0] : "";
-                    string key = fileLines.Length > 1 ? fileLines[1] : "";
+                    string m = File.ReadAllText(filePath);
 
                     tt2.Text = m;
-                    tkey6.Text = key;
                 }
             }
         }
@@ -348,7 +341,7 @@ namespace laba1
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                     openFileDialog.Title = "Выберите файл для сохранения";
 
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -367,7 +360,7 @@ namespace laba1
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"; //фильтр файлов
+                    openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
                     openFileDialog.Title = "Выберите файл для сохранения";
 
                     if (openFileDialog.ShowDialog() == DialogResult.OK)

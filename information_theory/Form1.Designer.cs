@@ -83,9 +83,9 @@
             // 
             // encrypt
             // 
-            this.encrypt.Location = new System.Drawing.Point(90, 260);
+            this.encrypt.Location = new System.Drawing.Point(55, 268);
             this.encrypt.Name = "encrypt";
-            this.encrypt.Size = new System.Drawing.Size(189, 50);
+            this.encrypt.Size = new System.Drawing.Size(189, 41);
             this.encrypt.TabIndex = 0;
             this.encrypt.Text = "Зашифровать";
             this.encrypt.UseVisualStyleBackColor = true;
@@ -94,9 +94,9 @@
             // tm1
             // 
             this.tm1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.tm1.Location = new System.Drawing.Point(108, 60);
+            this.tm1.Location = new System.Drawing.Point(90, 59);
             this.tm1.Name = "tm1";
-            this.tm1.Size = new System.Drawing.Size(153, 31);
+            this.tm1.Size = new System.Drawing.Size(324, 31);
             this.tm1.TabIndex = 1;
             // 
             // label1
@@ -123,27 +123,27 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(103, 106);
+            this.label3.Location = new System.Drawing.Point(206, 105);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(163, 25);
+            this.label3.Size = new System.Drawing.Size(77, 25);
             this.label3.TabIndex = 4;
-            this.label3.Text = "Введите ключ1";
+            this.label3.Text = "Ключ1";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(107, 28);
+            this.label4.Location = new System.Drawing.Point(165, 28);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(155, 25);
+            this.label4.Size = new System.Drawing.Size(172, 25);
             this.label4.TabIndex = 6;
-            this.label4.Text = "Введите текст";
+            this.label4.Text = "Исходный текст";
             // 
             // tkey1
             // 
-            this.tkey1.Location = new System.Drawing.Point(105, 137);
+            this.tkey1.Location = new System.Drawing.Point(130, 134);
             this.tkey1.Name = "tkey1";
-            this.tkey1.Size = new System.Drawing.Size(153, 31);
+            this.tkey1.Size = new System.Drawing.Size(232, 31);
             this.tkey1.TabIndex = 5;
             // 
             // label8
@@ -173,24 +173,24 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label10.Location = new System.Drawing.Point(103, 181);
+            this.label10.Location = new System.Drawing.Point(206, 181);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(163, 25);
+            this.label10.Size = new System.Drawing.Size(77, 25);
             this.label10.TabIndex = 16;
-            this.label10.Text = "Введите ключ2";
+            this.label10.Text = "Ключ2";
             // 
             // tkey2
             // 
-            this.tkey2.Location = new System.Drawing.Point(105, 213);
+            this.tkey2.Location = new System.Drawing.Point(130, 209);
             this.tkey2.Name = "tkey2";
-            this.tkey2.Size = new System.Drawing.Size(153, 31);
+            this.tkey2.Size = new System.Drawing.Size(232, 31);
             this.tkey2.TabIndex = 15;
             // 
             // fileread1
             // 
-            this.fileread1.Location = new System.Drawing.Point(302, 260);
+            this.fileread1.Location = new System.Drawing.Point(262, 268);
             this.fileread1.Name = "fileread1";
-            this.fileread1.Size = new System.Drawing.Size(209, 50);
+            this.fileread1.Size = new System.Drawing.Size(209, 41);
             this.fileread1.TabIndex = 17;
             this.fileread1.Text = "Прочитать файл";
             this.fileread1.UseVisualStyleBackColor = true;
@@ -200,7 +200,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label11.Location = new System.Drawing.Point(58, 340);
+            this.label11.Location = new System.Drawing.Point(19, 338);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(115, 25);
             this.label11.TabIndex = 18;
@@ -208,24 +208,23 @@
             // 
             // tencr1
             // 
-            this.tencr1.Location = new System.Drawing.Point(179, 338);
+            this.tencr1.Location = new System.Drawing.Point(138, 336);
             this.tencr1.Name = "tencr1";
-            this.tencr1.Size = new System.Drawing.Size(179, 31);
+            this.tencr1.Size = new System.Drawing.Size(237, 31);
             this.tencr1.TabIndex = 19;
-            this.tencr1.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
             // 
             // tm2
             // 
-            this.tm2.Location = new System.Drawing.Point(179, 341);
+            this.tm2.Location = new System.Drawing.Point(139, 341);
             this.tm2.Name = "tm2";
-            this.tm2.Size = new System.Drawing.Size(179, 31);
+            this.tm2.Size = new System.Drawing.Size(236, 31);
             this.tm2.TabIndex = 29;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(58, 344);
+            this.label5.Location = new System.Drawing.Point(22, 343);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(115, 25);
             this.label5.TabIndex = 28;
@@ -233,9 +232,9 @@
             // 
             // fileread2
             // 
-            this.fileread2.Location = new System.Drawing.Point(302, 267);
+            this.fileread2.Location = new System.Drawing.Point(262, 269);
             this.fileread2.Name = "fileread2";
-            this.fileread2.Size = new System.Drawing.Size(209, 50);
+            this.fileread2.Size = new System.Drawing.Size(209, 38);
             this.fileread2.TabIndex = 27;
             this.fileread2.Text = "Прочитать файл";
             this.fileread2.UseVisualStyleBackColor = true;
@@ -245,58 +244,58 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(103, 183);
+            this.label6.Location = new System.Drawing.Point(206, 183);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(163, 25);
+            this.label6.Size = new System.Drawing.Size(77, 25);
             this.label6.TabIndex = 26;
-            this.label6.Text = "Введите ключ1";
+            this.label6.Text = "Ключ1";
             // 
             // tkey4
             // 
-            this.tkey4.Location = new System.Drawing.Point(105, 214);
+            this.tkey4.Location = new System.Drawing.Point(130, 213);
             this.tkey4.Name = "tkey4";
-            this.tkey4.Size = new System.Drawing.Size(153, 31);
+            this.tkey4.Size = new System.Drawing.Size(232, 31);
             this.tkey4.TabIndex = 25;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label7.Location = new System.Drawing.Point(103, 32);
+            this.label7.Location = new System.Drawing.Point(179, 34);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(159, 25);
+            this.label7.Size = new System.Drawing.Size(137, 25);
             this.label7.TabIndex = 24;
-            this.label7.Text = "Введите шифр";
+            this.label7.Text = "Шифротекст";
             // 
             // tt1
             // 
-            this.tt1.Location = new System.Drawing.Point(105, 63);
+            this.tt1.Location = new System.Drawing.Point(90, 62);
             this.tt1.Name = "tt1";
-            this.tt1.Size = new System.Drawing.Size(153, 31);
+            this.tt1.Size = new System.Drawing.Size(324, 31);
             this.tt1.TabIndex = 23;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label12.Location = new System.Drawing.Point(103, 108);
+            this.label12.Location = new System.Drawing.Point(206, 109);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(163, 25);
+            this.label12.Size = new System.Drawing.Size(77, 25);
             this.label12.TabIndex = 22;
-            this.label12.Text = "Введите ключ2";
+            this.label12.Text = "Ключ2";
             // 
             // tkey3
             // 
-            this.tkey3.Location = new System.Drawing.Point(105, 139);
+            this.tkey3.Location = new System.Drawing.Point(130, 141);
             this.tkey3.Name = "tkey3";
-            this.tkey3.Size = new System.Drawing.Size(153, 31);
+            this.tkey3.Size = new System.Drawing.Size(232, 31);
             this.tkey3.TabIndex = 21;
             // 
             // decrypt
             // 
-            this.decrypt.Location = new System.Drawing.Point(90, 267);
+            this.decrypt.Location = new System.Drawing.Point(55, 269);
             this.decrypt.Name = "decrypt";
-            this.decrypt.Size = new System.Drawing.Size(189, 50);
+            this.decrypt.Size = new System.Drawing.Size(189, 38);
             this.decrypt.TabIndex = 20;
             this.decrypt.Text = "Расшифровать";
             this.decrypt.UseVisualStyleBackColor = true;
@@ -304,9 +303,9 @@
             // 
             // save1
             // 
-            this.save1.Location = new System.Drawing.Point(371, 329);
+            this.save1.Location = new System.Drawing.Point(386, 329);
             this.save1.Name = "save1";
-            this.save1.Size = new System.Drawing.Size(140, 50);
+            this.save1.Size = new System.Drawing.Size(140, 44);
             this.save1.TabIndex = 30;
             this.save1.Text = "Сохранить";
             this.save1.UseVisualStyleBackColor = true;
@@ -314,7 +313,7 @@
             // 
             // save2
             // 
-            this.save2.Location = new System.Drawing.Point(367, 332);
+            this.save2.Location = new System.Drawing.Point(380, 330);
             this.save2.Name = "save2";
             this.save2.Size = new System.Drawing.Size(146, 50);
             this.save2.TabIndex = 31;
@@ -334,9 +333,9 @@
             // 
             // save4
             // 
-            this.save4.Location = new System.Drawing.Point(1238, 333);
+            this.save4.Location = new System.Drawing.Point(1277, 334);
             this.save4.Name = "save4";
-            this.save4.Size = new System.Drawing.Size(146, 50);
+            this.save4.Size = new System.Drawing.Size(140, 39);
             this.save4.TabIndex = 54;
             this.save4.Text = "Сохранить";
             this.save4.UseVisualStyleBackColor = true;
@@ -344,9 +343,9 @@
             // 
             // save3
             // 
-            this.save3.Location = new System.Drawing.Point(1247, 323);
+            this.save3.Location = new System.Drawing.Point(1277, 312);
             this.save3.Name = "save3";
-            this.save3.Size = new System.Drawing.Size(140, 49);
+            this.save3.Size = new System.Drawing.Size(140, 40);
             this.save3.TabIndex = 53;
             this.save3.Text = "Сохранить";
             this.save3.UseVisualStyleBackColor = true;
@@ -354,16 +353,16 @@
             // 
             // tm4
             // 
-            this.tm4.Location = new System.Drawing.Point(1055, 343);
+            this.tm4.Location = new System.Drawing.Point(1055, 338);
             this.tm4.Name = "tm4";
-            this.tm4.Size = new System.Drawing.Size(170, 31);
+            this.tm4.Size = new System.Drawing.Size(216, 31);
             this.tm4.TabIndex = 52;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label14.Location = new System.Drawing.Point(934, 343);
+            this.label14.Location = new System.Drawing.Point(940, 339);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(115, 25);
             this.label14.TabIndex = 51;
@@ -371,9 +370,9 @@
             // 
             // fileread4
             // 
-            this.fileread4.Location = new System.Drawing.Point(1182, 264);
+            this.fileread4.Location = new System.Drawing.Point(1192, 264);
             this.fileread4.Name = "fileread4";
-            this.fileread4.Size = new System.Drawing.Size(205, 50);
+            this.fileread4.Size = new System.Drawing.Size(205, 38);
             this.fileread4.TabIndex = 50;
             this.fileread4.Text = "Прочитать файл";
             this.fileread4.UseVisualStyleBackColor = true;
@@ -383,41 +382,41 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label16.Location = new System.Drawing.Point(973, 62);
+            this.label16.Location = new System.Drawing.Point(1107, 67);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(159, 25);
+            this.label16.Size = new System.Drawing.Size(137, 25);
             this.label16.TabIndex = 47;
-            this.label16.Text = "Введите шифр";
+            this.label16.Text = "Шифротекст";
             // 
             // tt2
             // 
-            this.tt2.Location = new System.Drawing.Point(975, 100);
+            this.tt2.Location = new System.Drawing.Point(1016, 102);
             this.tt2.Name = "tt2";
-            this.tt2.Size = new System.Drawing.Size(153, 31);
+            this.tt2.Size = new System.Drawing.Size(314, 31);
             this.tt2.TabIndex = 46;
             // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label17.Location = new System.Drawing.Point(977, 158);
+            this.label17.Location = new System.Drawing.Point(1137, 165);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(151, 25);
+            this.label17.Size = new System.Drawing.Size(65, 25);
             this.label17.TabIndex = 45;
-            this.label17.Text = "Введите ключ";
+            this.label17.Text = "Ключ";
             // 
             // tkey6
             // 
-            this.tkey6.Location = new System.Drawing.Point(975, 203);
+            this.tkey6.Location = new System.Drawing.Point(1059, 195);
             this.tkey6.Name = "tkey6";
-            this.tkey6.Size = new System.Drawing.Size(153, 31);
+            this.tkey6.Size = new System.Drawing.Size(219, 31);
             this.tkey6.TabIndex = 44;
             // 
             // decrypt1
             // 
-            this.decrypt1.Location = new System.Drawing.Point(959, 264);
+            this.decrypt1.Location = new System.Drawing.Point(972, 264);
             this.decrypt1.Name = "decrypt1";
-            this.decrypt1.Size = new System.Drawing.Size(189, 50);
+            this.decrypt1.Size = new System.Drawing.Size(189, 38);
             this.decrypt1.TabIndex = 43;
             this.decrypt1.Text = "Расшифровать";
             this.decrypt1.UseVisualStyleBackColor = true;
@@ -425,16 +424,16 @@
             // 
             // tencr2
             // 
-            this.tencr2.Location = new System.Drawing.Point(1071, 331);
+            this.tencr2.Location = new System.Drawing.Point(1057, 316);
             this.tencr2.Name = "tencr2";
-            this.tencr2.Size = new System.Drawing.Size(157, 31);
+            this.tencr2.Size = new System.Drawing.Size(214, 31);
             this.tencr2.TabIndex = 42;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label18.Location = new System.Drawing.Point(937, 334);
+            this.label18.Location = new System.Drawing.Point(940, 316);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(115, 25);
             this.label18.TabIndex = 41;
@@ -442,9 +441,9 @@
             // 
             // fileread3
             // 
-            this.fileread3.Location = new System.Drawing.Point(1182, 257);
+            this.fileread3.Location = new System.Drawing.Point(1192, 239);
             this.fileread3.Name = "fileread3";
-            this.fileread3.Size = new System.Drawing.Size(205, 49);
+            this.fileread3.Size = new System.Drawing.Size(205, 41);
             this.fileread3.TabIndex = 40;
             this.fileread3.Text = "Прочитать файл";
             this.fileread3.UseVisualStyleBackColor = true;
@@ -454,41 +453,41 @@
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label20.Location = new System.Drawing.Point(976, 59);
+            this.label20.Location = new System.Drawing.Point(1082, 49);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(155, 25);
+            this.label20.Size = new System.Drawing.Size(172, 25);
             this.label20.TabIndex = 37;
-            this.label20.Text = "Введите текст";
+            this.label20.Text = "Исходный текст";
             // 
             // tkey5
             // 
-            this.tkey5.Location = new System.Drawing.Point(976, 192);
+            this.tkey5.Location = new System.Drawing.Point(1059, 168);
             this.tkey5.Name = "tkey5";
-            this.tkey5.Size = new System.Drawing.Size(153, 31);
+            this.tkey5.Size = new System.Drawing.Size(224, 31);
             this.tkey5.TabIndex = 36;
             // 
             // label21
             // 
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label21.Location = new System.Drawing.Point(977, 154);
+            this.label21.Location = new System.Drawing.Point(1138, 140);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(151, 25);
+            this.label21.Size = new System.Drawing.Size(65, 25);
             this.label21.TabIndex = 35;
-            this.label21.Text = "Введите ключ";
+            this.label21.Text = "Ключ";
             // 
             // tm3
             // 
-            this.tm3.Location = new System.Drawing.Point(976, 102);
+            this.tm3.Location = new System.Drawing.Point(1016, 84);
             this.tm3.Name = "tm3";
-            this.tm3.Size = new System.Drawing.Size(153, 31);
+            this.tm3.Size = new System.Drawing.Size(314, 31);
             this.tm3.TabIndex = 34;
             // 
             // encrypt1
             // 
-            this.encrypt1.Location = new System.Drawing.Point(962, 257);
+            this.encrypt1.Location = new System.Drawing.Point(969, 239);
             this.encrypt1.Name = "encrypt1";
-            this.encrypt1.Size = new System.Drawing.Size(189, 49);
+            this.encrypt1.Size = new System.Drawing.Size(189, 41);
             this.encrypt1.TabIndex = 33;
             this.encrypt1.Text = "Зашифровать";
             this.encrypt1.UseVisualStyleBackColor = true;
