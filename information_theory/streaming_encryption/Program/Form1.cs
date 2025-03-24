@@ -176,7 +176,7 @@ namespace streaming_encryption
             }
             //диалоговое окно для сохранения файла
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Текстовый файл (*.txt)|*.txt|Бинарный файл (*.bin)|*.bin|Изображение (*.png)|*.png|Аудио WAV (*.wav)|*.wav|Видео MP4 (*.mp4)|*.mp4|Все файлы (*.*)|*.*";
+            saveFileDialog.Filter = "Бинарный файл (*.bin)|*.bin|Изображение (*.png)|*.png|Аудио WAV (*.wav)|*.wav|Видео MP4 (*.mp4)|*.mp4|Все файлы (*.*)|*.*";
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -188,14 +188,6 @@ namespace streaming_encryption
 
                     switch (extension)
                     {
-                        case ".txt":
-                            string decodedText = BinaryStringToText(txt.Text);
-                            File.WriteAllText(filePath, decodedText, Encoding.UTF8);
-                            txtresult.Text = "";
-                            txtkey.Text = "";
-                            txtm.Text = "";
-                            filename.Text = "Имя файла:";
-                            break;
                         case ".bin":
                             SaveAsBinaryText(txt.Text, filePath);
                             txtresult.Text = "";
@@ -235,23 +227,6 @@ namespace streaming_encryption
                 }
             }
         }
-
-        private string BinaryStringToText(string binaryText)
-        {
-            string[] byteStrings = binaryText.Split(' '); //разделение по пробелам
-            List<byte> byteList = new List<byte>();
-
-            foreach (string byteString in byteStrings)
-            {
-                if (byteString.Length == 8)
-                {
-                    byteList.Add(Convert.ToByte(byteString, 2)); //конверт 8 бит в байт
-                }
-            }
-
-            return Encoding.UTF8.GetString(byteList.ToArray()); //преобразование байт в текст
-        }
-
         private void btnsave1_Click(object sender, EventArgs e)
         {
             SaveResult(txtresult);
