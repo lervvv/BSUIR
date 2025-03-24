@@ -107,12 +107,26 @@ namespace streaming_encryption
 
         private void btnencrypt_Click(object sender, EventArgs e)
         {
-            EncrDecr(txtm, txtresult, txtkey);
+            if(txtm.Text == "")
+            {
+                MessageBox.Show("Откройте файл для шифрования.", "Ошибка");
+            }
+            else
+            {
+                EncrDecr(txtm, txtresult, txtkey);
+            }
         }
 
         private void btndecrypt_Click(object sender, EventArgs e)
         {
-            EncrDecr(txtm, txtresult, txtkey);
+            if (txtm.Text == "")
+            {
+                MessageBox.Show("Откройте файл для дешифрования.", "Ошибка");
+            }
+            else
+            {
+                EncrDecr(txtm, txtresult, txtkey);
+            }
         }
 
         private void ReadingFile(RichTextBox txt, Label l)
@@ -177,20 +191,38 @@ namespace streaming_encryption
                         case ".txt":
                             string decodedText = BinaryStringToText(txt.Text);
                             File.WriteAllText(filePath, decodedText, Encoding.UTF8);
+                            txtresult.Text = "";
+                            txtkey.Text = "";
+                            txtm.Text = "";
+                            filename.Text = "Имя файла:";
                             break;
-
                         case ".bin":
                             SaveAsBinaryText(txt.Text, filePath);
+                            txtresult.Text = "";
+                            txtkey.Text = "";
+                            txtm.Text = "";
+                            filename.Text = "Имя файла:";
                             break;
                         case ".png":
                             SaveAsImage(txt.Text, filePath);
+                            txtresult.Text = "";
+                            txtkey.Text = "";
+                            txtm.Text = "";
+                            filename.Text = "Имя файла:";
                             break;
                         case ".wav":
                             SaveAsAudio(txt.Text, filePath);
+                            txtresult.Text = "";
+                            txtkey.Text = "";
+                            txtm.Text = "";
+                            filename.Text = "Имя файла:";
                             break;
-
                         case ".mp4":
                             SaveAsVideo(txt.Text, filePath);
+                            txtresult.Text = "";
+                            txtkey.Text = "";
+                            txtm.Text = "";
+                            filename.Text = "Имя файла:";
                             break;
                         default:
                             MessageBox.Show("Неизвестный формат файла.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
