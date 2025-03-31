@@ -35,7 +35,6 @@ class ChatServer
             Console.WriteLine("Некорректный порт.");
             return;
         }
-
         if (!IsPortAvailable(port))
         {
             Console.WriteLine($"Порт {port} уже используется. Выберите другой.");
@@ -46,6 +45,7 @@ class ChatServer
         {
             //создание нового сервера
             TcpListener server = new TcpListener(IPAddress.Parse(ipAddress), port);
+            //запуск прослушивания
             server.Start();
             Console.WriteLine($"Сервер запущен на {ipAddress}:{port}");
             //асинхронная задача для ввода сообщений сервером
@@ -83,6 +83,7 @@ class ChatServer
             {
                 try
                 {
+                    //конвертирует текст в массив байтов
                     byte[] buffer = Encoding.UTF8.GetBytes(message);
                     client.GetStream().Write(buffer, 0, buffer.Length);
                 }
@@ -95,8 +96,10 @@ class ChatServer
     {
         try
         {
+            //серверный сокет слушает соединения на указанном порту
             using (TcpListener listener = new TcpListener(IPAddress.Any, port))
             {
+                //если порт свободен, будет успешный запуск
                 listener.Start();
                 listener.Stop();
                 return true;
@@ -110,23 +113,24 @@ class ChatServer
 
     static void HandleClient(TcpClient client)
     {
+        //сетевой поток
         NetworkStream stream = client.GetStream();
         byte[] buffer = new byte[1024];
         int bytesRead;
 
         try
         {
-            // Получаем имя клиента
+            //имя клиента
             bytesRead = stream.Read(buffer, 0, buffer.Length);
             string clientName = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
 
             lock (clientNames)
             {
-                clientNames[client] = clientName; // Запоминаем клиента и его имя
+                clientNames[client] = clientName; //связываем клиента и имя
             }
 
             Console.WriteLine($"Клиент {clientName} подключился.");
-
+            //читает сообщения от клиента
             while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
             {
                 string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
@@ -136,7 +140,7 @@ class ChatServer
         }
         catch
         {
-            // Узнаем имя отключившегося клиента
+            //если клиент отключился
             lock (clientNames)
             {
                 if (clientNames.TryGetValue(client, out string clientName))
@@ -146,7 +150,7 @@ class ChatServer
                 }
             }
         }
-
+        //клиент полностью закрывается, ресурсы очищаются
         client.Close();
     }
 
@@ -164,10 +168,12 @@ class ChatServer
         Console.Write("Введите ваше имя: ");
         string clientName = Console.ReadLine();
 
+        //создание TCP клиента и подключение к серверу
         using TcpClient client = new TcpClient(ipAddress, port);
+        //сетевой поток для обмена данными
         NetworkStream stream = client.GetStream();
 
-        // Отправляем имя клиента сразу после подключения
+        //отправка имени клиента после подключения
         byte[] nameBuffer = Encoding.UTF8.GetBytes(clientName);
         stream.Write(nameBuffer, 0, nameBuffer.Length);
 
@@ -193,7 +199,7 @@ class ChatServer
         while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
         {
             string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            Console.WriteLine($"Получено: {message}");
+            Console.WriteLine($"{message}");
         }
     }
 }

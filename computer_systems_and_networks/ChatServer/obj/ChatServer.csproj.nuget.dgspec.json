@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\4 семестр\\КСИС\\ChatServer1\\ChatServer\\ChatServer.csproj": {}
+    "D:\\4 семестр\\КСИС\\ChatServer\\ChatServer\\ChatServer.csproj": {}
   },
   "projects": {
-    "D:\\4 семестр\\КСИС\\ChatServer1\\ChatServer\\ChatServer.csproj": {
+    "D:\\4 семестр\\КСИС\\ChatServer\\ChatServer\\ChatServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\4 семестр\\КСИС\\ChatServer1\\ChatServer\\ChatServer.csproj",
+        "projectUniqueName": "D:\\4 семестр\\КСИС\\ChatServer\\ChatServer\\ChatServer.csproj",
         "projectName": "ChatServer",
-        "projectPath": "D:\\4 семестр\\КСИС\\ChatServer1\\ChatServer\\ChatServer.csproj",
+        "projectPath": "D:\\4 семестр\\КСИС\\ChatServer\\ChatServer\\ChatServer.csproj",
         "packagesPath": "C:\\Users\\valer\\.nuget\\packages\\",
-        "outputPath": "D:\\4 семестр\\КСИС\\ChatServer1\\ChatServer\\obj\\",
+        "outputPath": "D:\\4 семестр\\КСИС\\ChatServer\\ChatServer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\valer\\AppData\\Roaming\\NuGet\\NuGet.Config",
