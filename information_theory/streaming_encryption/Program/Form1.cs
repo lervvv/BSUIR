@@ -25,42 +25,31 @@ namespace streaming_encryption
             }
         }
 
-        private List<string> GenerateKey(int length)
+        private StringBuilder GenerateKey(int length)
         {
-            List<string> keyStates = new List<string>();
-            StringBuilder keyBuffer = new StringBuilder();
-
+            StringBuilder keyStates = new StringBuilder();
             for (int i = 0; i < length * 8; i++)
             {
-                keyBuffer.Append(lfsr[i % 23] ? "1" : "0");
-                if (keyBuffer.Length == 8)
+                keyStates.Append(lfsr[0] ? "1" : "0");
+                //XOR и сдвиг
+                bool newBit = lfsr[0] ^ lfsr[18];
+                for (int j = 0; j < LFSR_SIZE - 1; j++)
                 {
-                    keyStates.Add(keyBuffer.ToString());
-                    keyBuffer.Clear(); //очищаем
+                    lfsr[j] = lfsr[j + 1];
                 }
-                //XOR и сдвиг каждые 23 итерации
-                if ((i + 1) % 23 == 0)
-                {
-                    bool newBit = lfsr[0] ^ lfsr[18];
-
-                    for (int j = 0; j < LFSR_SIZE - 1; j++)
-                    {
-                        lfsr[j] = lfsr[j + 1];
-                    }
-                    lfsr[LFSR_SIZE - 1] = newBit;
-                }
+                lfsr[LFSR_SIZE - 1] = newBit;
             }
             return keyStates;
         }
 
-
         //шифрование данных
-        private byte[] EncryptDecrypt(byte[] input, List<String> key)
+        private byte[] EncryptDecrypt(byte[] input, StringBuilder key)
         {
             byte[] result = new byte[input.Length];
             for (int i = 0; i < input.Length; i++)
             {
-                byte keyByte = Convert.ToByte(key[i].Substring(0, 8), 2);
+                string byteString = key.ToString(i * 8, 8);
+                byte keyByte = Convert.ToByte(byteString, 2);
                 result[i] = (byte)(input[i] ^ keyByte);
             }
             return result;
@@ -71,9 +60,18 @@ namespace streaming_encryption
             try
             {
                 string m = txt.Text.Replace(" ", "");
-                if ((!m.All(c => c == '0' || c == '1')) && m.Length % 8 != 0)
+                if (!m.All(c => c == '0' || c == '1'))
                 {
-                    MessageBox.Show("Некорректные исходные данные", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Некорректные символы в данных", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtkey.Text = "";
+                    txtresult.Text = "";
+                    return;
+                }
+                if (m.Length % 8 != 0)
+                {
+                    MessageBox.Show("Длина данных должна быть кратна 8", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtkey.Text = "";
+                    txtresult.Text = "";
                     return;
                 }
 
@@ -83,14 +81,23 @@ namespace streaming_encryption
                                               .ToArray();
 
                 string first = txtfirst.Text;
-                if (first.Length > LFSR_SIZE || first.Length == 0)
+                if (!first.All(c => c == '0' || c == '1'))
+                {
+                    MessageBox.Show("Некорректные символы в регистре", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtkey.Text = "";
+                    txtresult.Text = "";
+                    return;
+                }
+                if (first.Length != LFSR_SIZE)
                 {
                     MessageBox.Show("Начальное состояние регистра должно быть длиной 23 бита.", "Ошибка");
+                    txtkey.Text = "";
+                    txtresult.Text = "";
                     return;
                 }
 
                 InitializeLFSR(first);
-                List<string> keyStates = GenerateKey(inputBytes.Length);
+                StringBuilder keyStates = GenerateKey(inputBytes.Length);
                 byte[] encryptedBytes = EncryptDecrypt(inputBytes, keyStates);
 
                 //преобразование зашифрованных данных в строку
