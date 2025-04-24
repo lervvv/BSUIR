@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "public_key_cryptosystem", "public_key_cryptosystem.csproj", "{A431F755-C486-432E-8BA2-923CC1BBECF0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A431F755-C486-432E-8BA2-923CC1BBECF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A431F755-C486-432E-8BA2-923CC1BBECF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A431F755-C486-432E-8BA2-923CC1BBECF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A431F755-C486-432E-8BA2-923CC1BBECF0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF3512EA-C371-4FB2-9942-049C9D871ED1}
+	EndGlobalSection
+EndGlobal
