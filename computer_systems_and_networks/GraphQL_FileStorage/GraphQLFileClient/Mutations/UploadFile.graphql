@@ -1,0 +1,8 @@
+mutation UploadFile($file: Upload!) {
+  uploadFile(file: $file) {
+    id
+    fileName
+    size
+    uploadedAt
+  }
+}

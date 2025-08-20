@@ -1,0 +1,11 @@
+{
+  "schema": "http://localhost:5095/graphql",
+  "documents": "Queries/*.graphql",
+  "extensions": {
+    "strawberryShake": {
+      "name": "FileClient",
+      "namespace": "GraphQLFileClient",
+      "url": "http://localhost:5095/graphql"
+    }
+  }
+}

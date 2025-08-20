@@ -1,0 +1,6 @@
+@GraphQLFileStorage_HostAddress = http://localhost:5095
+
+GET {{GraphQLFileStorage_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
