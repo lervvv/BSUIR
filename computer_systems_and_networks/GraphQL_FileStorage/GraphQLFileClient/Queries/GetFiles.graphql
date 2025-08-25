@@ -1,8 +1,0 @@
-﻿query GetFiles {
-  files {
-    id
-    fileName
-    size
-    uploadedAt
-  }
-}
