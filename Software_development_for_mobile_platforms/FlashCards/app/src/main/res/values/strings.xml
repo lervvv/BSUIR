@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">FlashCards</string>
+
+    <string name="screen_dictionary">Dictionary</string>
+    <string name="screen_cards">Cards</string>
+    <string name="screen_profile">Profile</string>
+
+    <string name="no_words_yet">No words yet. Add your first word!</string>
+    <string name="no_words_to_learn">No words to learn yet.\nAdd words in the Dictionary!</string>
+
+    <string name="add_new_word">Add new word</string>
+    <string name="edit_word">Edit word</string>
+    <string name="original_word">Word</string>
+    <string name="translated_word">Translation</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="show_translation">Show translation</string>
+    <string name="tap_to_translate">Tap button to see translation</string>
+
+    <string name="learned">Learned</string>
+    <string name="progress_fmt">Progress: %1$d/3</string>
+
+    <string name="words_learned">Words learned</string>
+    <string name="theme">Theme</string>
+    <string name="language">Language</string>
+</resources>

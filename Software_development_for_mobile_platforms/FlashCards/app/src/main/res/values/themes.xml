@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.FlashCards" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+
+    <style name="Theme.FlashCards.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.FlashCards</item>
+    </style>
+</resources>
