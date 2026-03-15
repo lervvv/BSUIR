@@ -16,7 +16,7 @@
     <string name="cancel">Cancel</string>
 
     <string name="show_translation">Show translation</string>
-    <string name="tap_to_translate">Tap button to see translation</string>
+    <string name="tap_to_translate">Tap to translate</string>
 
     <string name="learned">Learned</string>
     <string name="progress_fmt">Progress: %1$d/3</string>
@@ -24,4 +24,17 @@
     <string name="words_learned">Words learned</string>
     <string name="theme">Theme</string>
     <string name="language">Language</string>
+
+    <string name="load_random_word">Load random word</string>
+    <string name="retry">Retry</string>
+    <string name="offline_mode">Offline mode</string>
+    <string name="swipe_right_add">Swipe right to add to dictionary</string>
+    <string name="next">Next</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="check_internet_connection">Please check your internet connection</string>
+    <string name="my_words">My words</string>
+    <string name="random">Random</string>
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
 </resources>

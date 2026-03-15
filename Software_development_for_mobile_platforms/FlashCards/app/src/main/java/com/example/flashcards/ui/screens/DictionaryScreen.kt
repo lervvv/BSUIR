@@ -21,14 +21,18 @@ import com.example.flashcards.ui.viewmodel.DictionaryViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
+    // Получаем список всех слов из ViewModel (наблюдаемый StateFlow)
     val words by vm.words.collectAsStateWithLifecycle()
 
-    var dialogMode by remember { mutableStateOf<Word?>(null) } // null = add, else edit word
+    // Состояние диалога: null = режим добавления, Word = режим редактирования
+    var dialogMode by remember { mutableStateOf<Word?>(null) }
+    // Флаг видимости диалога
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.screen_dictionary)) }) },
         floatingActionButton = {
+            // Кнопка добавления нового слова, учитывает нижний отступ от навигации
             FloatingActionButton(
                 modifier = Modifier.padding(bottom = contentPadding.calculateBottomPadding()),
                 onClick = { dialogMode = null; showDialog = true }
@@ -37,6 +41,7 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
             }
         }
     ) { inner ->
+        // Рассчитываем отступы с учётом верхней панели и внешнего контента (нижняя навигация)
         val pad = PaddingValues(
             start = 16.dp, end = 16.dp,
             top = inner.calculateTopPadding(),
@@ -44,6 +49,7 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
         )
 
         if (words.isEmpty()) {
+            // Если словарь пуст — показываем информационное сообщение по центру
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -53,16 +59,19 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
                 Text(stringResource(R.string.no_words_yet))
             }
         } else {
+            // Иначе выводим список слов в LazyColumn для эффективной прокрутки
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(pad),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                // Ключом выступает id, чтобы правильно обновлять элементы при изменениях
                 items(words, key = { it.id }) { w ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
+                            // Клик по карточке открывает диалог редактирования
                             .clickable { dialogMode = w; showDialog = true }
                     ) {
                         Row(
@@ -72,17 +81,19 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            // Левая часть: слово, перевод и статус
                             Column(Modifier.weight(1f)) {
                                 Text(w.front, style = MaterialTheme.typography.titleMedium)
                                 Text(w.back, style = MaterialTheme.typography.bodyMedium)
                                 Text(
                                     text = if (w.learned)
-                                        stringResource(R.string.learned)
+                                        stringResource(R.string.learned)       // "Выучено"
                                     else
-                                        stringResource(R.string.progress_fmt, w.knownCount),
+                                        stringResource(R.string.progress_fmt, w.knownCount), // прогресс X/3
                                     style = MaterialTheme.typography.labelSmall
                                 )
                             }
+                            // Правая часть: иконка удаления (не перекрывает клик по карточке)
                             IconButton(onClick = { vm.delete(w) }) {
                                 Icon(Icons.Default.Delete, contentDescription = null)
                             }
@@ -93,25 +104,35 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
         }
     }
 
+    // Отображаем диалог добавления/редактирования, если флаг установлен
     if (showDialog) {
         AddEditWordDialog(
-            existing = dialogMode,
+            existing = dialogMode,          // null для добавления, Word для редактирования
             onDismiss = { showDialog = false },
             onSave = { front, back ->
                 val existing = dialogMode
-                if (existing == null) vm.add(front, back) else vm.update(existing, front, back)
+                if (existing == null) {
+                    vm.add(front, back)     // добавляем новое слово
+                } else {
+                    vm.update(existing, front, back) // обновляем существующее
+                }
                 showDialog = false
             }
         )
     }
 }
 
+/**
+ * Диалог для создания или редактирования слова.
+ * @param existing если null — режим добавления, иначе редактирование с предзаполненными полями
+ */
 @Composable
 private fun AddEditWordDialog(
     existing: Word?,
     onDismiss: () -> Unit,
     onSave: (String, String) -> Unit
 ) {
+    // Состояния полей ввода (инициализируются значениями existing, если есть)
     var front by remember { mutableStateOf(existing?.front ?: "") }
     var back by remember { mutableStateOf(existing?.back ?: "") }
 
@@ -141,6 +162,7 @@ private fun AddEditWordDialog(
         },
         confirmButton = {
             TextButton(
+                // Кнопка "Сохранить" активна только если оба поля непустые
                 enabled = front.isNotBlank() && back.isNotBlank(),
                 onClick = { onSave(front, back) }
             ) { Text(stringResource(R.string.save)) }

@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.example.flashcards.data.WordDao
+import com.example.flashcards.data.WordApiRepository
 import com.example.flashcards.ui.screens.CardsScreen
 import com.example.flashcards.ui.screens.DictionaryScreen
 import com.example.flashcards.ui.screens.ProfileScreen
@@ -26,23 +27,22 @@ sealed class Screen(val route: String, val titleRes: Int, val icon: ImageVector)
     object Profile : Screen("profile", R.string.screen_profile, Icons.Default.Person)
 }
 
-// Корневой компонент навигации и основная структура UI
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashCardsApp(
     wordDao: WordDao,
-    settingsVm: SettingsViewModel
+    settingsVm: SettingsViewModel,
+    apiRepository: WordApiRepository
 ) {
     val nav = rememberNavController()
 
-    // Применяем язык ко всему приложению (перезапустит Activity автоматически)
     val lang = settingsVm.lang.collectAsStateWithLifecycle().value
     LaunchedEffect(lang) {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(lang))
     }
 
     val dictVm: DictionaryViewModel = viewModel(factory = DictionaryViewModelFactory(wordDao))
-    val cardsVm: CardsViewModel = viewModel(factory = CardsViewModelFactory(wordDao))
+    val cardsVm: CardsViewModel = viewModel(factory = CardsViewModelFactory(wordDao, apiRepository))
     val statsFlow = remember { wordDao.learnedCount() }
     val learnedCount by statsFlow.collectAsStateWithLifecycle(initialValue = 0)
 

@@ -24,4 +24,17 @@
     <string name="words_learned">Выучено слов</string>
     <string name="theme">Тема</string>
     <string name="language">Язык</string>
+
+    <string name="load_random_word">Загрузить случайное слово</string>
+    <string name="retry">Повторить</string>
+    <string name="offline_mode">Офлайн режим</string>
+    <string name="swipe_right_add">Свайп вправо, чтобы добавить в словарь</string>
+    <string name="next">Далее</string>
+    <string name="error_no_internet">Нет подключения к интернету</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="check_internet_connection">Проверьте интернет соединение</string>
+    <string name="my_words">Мои слова</string>
+    <string name="random">Случайные</string>
+    <string name="light_theme">Светлая</string>
+    <string name="dark_theme">Темная</string>
 </resources>

@@ -7,11 +7,11 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.flashcards.data.SettingsRepository
+import com.example.flashcards.data.WordApiRepository
 import com.example.flashcards.ui.theme.FlashCardsTheme
 import com.example.flashcards.ui.viewmodel.SettingsViewModel
 import com.example.flashcards.ui.viewmodel.SettingsViewModelFactory
 
-// Точка входа в приложение
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         val app = application as FlashCardsApplication
         val dao = app.db.wordDao()
+        val apiRepository = WordApiRepository(this, app.db.cachedWordDao())
 
         setContent {
             val settingsVm: SettingsViewModel = viewModel(
@@ -28,7 +29,11 @@ class MainActivity : AppCompatActivity() {
             val dark = settingsVm.dark.collectAsStateWithLifecycle().value
 
             FlashCardsTheme(darkTheme = dark) {
-                FlashCardsApp(wordDao = dao, settingsVm = settingsVm)
+                FlashCardsApp(
+                    wordDao = dao,
+                    settingsVm = settingsVm,
+                    apiRepository = apiRepository
+                )
             }
         }
     }
