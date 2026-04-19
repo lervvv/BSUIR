@@ -14,6 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
+import com.example.flashcards.data.FirestoreRepository
 import com.example.flashcards.data.WordDao
 import com.example.flashcards.data.WordApiRepository
 import com.example.flashcards.ui.screens.CardsScreen
@@ -41,7 +42,8 @@ fun FlashCardsApp(
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(lang))
     }
 
-    val dictVm: DictionaryViewModel = viewModel(factory = DictionaryViewModelFactory(wordDao))
+    val firestoreRepo = FirestoreRepository()
+    val dictVm: DictionaryViewModel = viewModel(factory = DictionaryViewModelFactory(wordDao, firestoreRepo))
     val cardsVm: CardsViewModel = viewModel(factory = CardsViewModelFactory(wordDao, apiRepository))
     val statsFlow = remember { wordDao.learnedCount() }
     val learnedCount by statsFlow.collectAsStateWithLifecycle(initialValue = 0)

@@ -19,7 +19,7 @@ sealed class RandomWordState {
     object Loading : RandomWordState()
     data class Success(val word: String, val translation: String, val isOffline: Boolean = false) : RandomWordState()
     data class Error(val message: String) : RandomWordState()
-    object NoCache : RandomWordState() // нет интернета и кэш пуст
+    object NoCache : RandomWordState()
 }
 
 class CardsViewModel(
@@ -27,12 +27,15 @@ class CardsViewModel(
     private val apiRepository: WordApiRepository
 ) : ViewModel() {
 
-    companion object {
-        private const val PREFETCH_SIZE = 50
-    }
-
     private val _mode = MutableStateFlow(CardsMode.DICTIONARY)
     val mode: StateFlow<CardsMode> = _mode.asStateFlow()
+
+    private val _selectedCategoryForCards = MutableStateFlow<String?>(null)
+    val selectedCategoryForCards: StateFlow<String?> = _selectedCategoryForCards.asStateFlow()
+
+    // Автоматически обновляемый список категорий из БД
+    val availableCategories: StateFlow<List<String>> = dao.getCategoriesFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val notLearned: StateFlow<List<Word>> =
         dao.notLearnedWords().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -40,19 +43,28 @@ class CardsViewModel(
     private val learned: StateFlow<List<Word>> =
         dao.learnedWords().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val deck: StateFlow<List<Word>> =
-        combine(notLearned, learned) { a, b -> if (a.isNotEmpty()) a else b }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val deck: StateFlow<List<Word>> = combine(
+        _mode,
+        _selectedCategoryForCards
+    ) { mode, category ->
+        if (mode == CardsMode.DICTIONARY) category else null
+    }.flatMapLatest { category ->
+        if (category == null || category.isBlank()) {
+            combine(notLearned, learned) { a, b -> if (a.isNotEmpty()) a else b }
+        } else {
+            dao.filterByCategory(category).map { filtered ->
+                val notLearnedCat = filtered.filter { !it.learned }
+                val learnedCat = filtered.filter { it.learned }
+                if (notLearnedCat.isNotEmpty()) notLearnedCat else learnedCat
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _randomWordState = MutableStateFlow<RandomWordState>(RandomWordState.Idle)
     val randomWordState: StateFlow<RandomWordState> = _randomWordState.asStateFlow()
 
     init {
-        // При создании ViewModel предзагружаем слова, если режим будет Random
-        viewModelScope.launch {
-            // Предзагрузка неблокирующая
-            apiRepository.startCacheMaintenance(viewModelScope)
-        }
+        apiRepository.startCacheMaintenance(viewModelScope)
     }
 
     fun setMode(newMode: CardsMode) {
@@ -60,6 +72,10 @@ class CardsViewModel(
         if (newMode == CardsMode.RANDOM) {
             loadRandomWord()
         }
+    }
+
+    fun setCategoryForCards(category: String?) {
+        _selectedCategoryForCards.value = category?.takeIf { it.isNotBlank() }
     }
 
     fun loadRandomWord() {
@@ -71,9 +87,7 @@ class CardsViewModel(
                     _randomWordState.value = RandomWordState.Success(word, translation, isOffline = false)
                 }.onFailure { error ->
                     when (error.message) {
-                        "NO_INTERNET_AND_NO_CACHE" -> {
-                            _randomWordState.value = RandomWordState.NoCache
-                        }
+                        "NO_INTERNET_AND_NO_CACHE" -> _randomWordState.value = RandomWordState.NoCache
                         else -> {
                             val cached = apiRepository.getCachedWordWithTranslation()
                             if (cached != null) {

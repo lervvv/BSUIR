@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [Word::class, CachedWord::class],
-    version = 3,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -24,7 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "flashcards.db"
                 )
-                    .fallbackToDestructiveMigration() // для простоты пересоздаём БД при изменении схемы
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { INSTANCE = it }
             }

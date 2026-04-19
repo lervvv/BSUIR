@@ -37,4 +37,21 @@
     <string name="random">Random</string>
     <string name="light_theme">Light</string>
     <string name="dark_theme">Dark</string>
+
+    <string name="search_hint">Search...</string>
+    <string name="daily_reminders">Daily reminders</string>
+    <string name="select_time">Select time</string>
+
+    <string name="toast_search">Search: %s</string>
+    <string name="all_categories">All categories</string>
+    <string name="toast_all_categories">All categories</string>
+    <string name="toast_category">Category: %s</string>
+    <string name="toast_sort_date">Sort: newest first</string>
+    <string name="toast_sort_alphabet">Sort: alphabetical</string>
+    <string name="toast_sort_progress">Sort: by progress</string>
+    <string name="reminder_set">Reminder set for %d:%02d</string>
+    <string name="avatar_deleted">Avatar deleted</string>
+    <string name="delete_avatar_title">Delete avatar</string>
+    <string name="delete_avatar_message">Are you sure you want to delete your avatar?</string>
+    <string name="delete">Delete</string>
 </resources>

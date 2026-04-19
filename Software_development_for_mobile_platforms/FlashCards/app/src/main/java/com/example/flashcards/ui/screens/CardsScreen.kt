@@ -28,7 +28,10 @@ fun CardsScreen(vm: CardsViewModel, contentPadding: PaddingValues) {
     val mode by vm.mode.collectAsStateWithLifecycle()
     val deck by vm.deck.collectAsStateWithLifecycle()
     val randomState by vm.randomWordState.collectAsStateWithLifecycle()
+    val selectedCategory by vm.selectedCategoryForCards.collectAsStateWithLifecycle()
+    val availableCategories by vm.availableCategories.collectAsStateWithLifecycle()
     var index by remember { mutableIntStateOf(0) }
+    var categoryExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(deck.size) {
         index = if (deck.isNotEmpty()) index % deck.size else 0
@@ -39,7 +42,8 @@ fun CardsScreen(vm: CardsViewModel, contentPadding: PaddingValues) {
             TopAppBar(
                 title = { Text(stringResource(R.string.screen_cards)) },
                 actions = {
-                    Row(Modifier.padding(end = 8.dp)) {
+                    Row(Modifier.padding(end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        // Переключатель режимов
                         FilterChip(
                             selected = mode == CardsMode.DICTIONARY,
                             onClick = { vm.setMode(CardsMode.DICTIONARY) },
@@ -53,6 +57,34 @@ fun CardsScreen(vm: CardsViewModel, contentPadding: PaddingValues) {
                             label = { Text(stringResource(R.string.random)) },
                             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                         )
+                        // Если режим словаря, показываем выбор категории
+                        if (mode == CardsMode.DICTIONARY && availableCategories.isNotEmpty()) {
+                            Spacer(Modifier.width(8.dp))
+                            TextButton(onClick = { categoryExpanded = true }) {
+                                Text(selectedCategory ?: stringResource(R.string.all_categories))
+                            }
+                            DropdownMenu(
+                                expanded = categoryExpanded,
+                                onDismissRequest = { categoryExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.all_categories)) },
+                                    onClick = {
+                                        vm.setCategoryForCards(null)
+                                        categoryExpanded = false
+                                    }
+                                )
+                                availableCategories.forEach { cat ->
+                                    DropdownMenuItem(
+                                        text = { Text(cat) },
+                                        onClick = {
+                                            vm.setCategoryForCards(cat)
+                                            categoryExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             )
@@ -66,15 +98,16 @@ fun CardsScreen(vm: CardsViewModel, contentPadding: PaddingValues) {
         )
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(pad),
+            modifier = Modifier.fillMaxSize().padding(pad),
             contentAlignment = Alignment.Center
         ) {
             when (mode) {
                 CardsMode.DICTIONARY -> {
                     if (deck.isEmpty()) {
-                        Text(stringResource(R.string.no_words_to_learn))
+                        Text(
+                            text = stringResource(R.string.no_words_to_learn),
+                            textAlign = TextAlign.Center
+                        )
                     } else {
                         val word = deck[index % deck.size]
                         SwipeCard(
