@@ -52,4 +52,11 @@
     <string name="all_categories">Все категории</string>
     <string name="toast_all_categories">Все категории</string>
     <string name="toast_category">Категория: %s</string>
+    <string name="default_web_client_id">ВАШ_WEB_CLIENT_ID_ИЗ_FIREBASE</string>
+
+    <string name="profile_picture">Фото профиля</string>
+    <string name="choose_image">Выбрать изображение</string>
+    <string name="change_image">Изменить изображение</string>
+    <string name="take_photo">Сделать фото</string>
+    <string name="sign_out">Выйти</string>
 </resources>

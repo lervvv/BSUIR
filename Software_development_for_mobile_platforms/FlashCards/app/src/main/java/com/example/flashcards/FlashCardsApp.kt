@@ -17,10 +17,9 @@ import androidx.navigation.compose.*
 import com.example.flashcards.data.FirestoreRepository
 import com.example.flashcards.data.WordDao
 import com.example.flashcards.data.WordApiRepository
-import com.example.flashcards.ui.screens.CardsScreen
-import com.example.flashcards.ui.screens.DictionaryScreen
-import com.example.flashcards.ui.screens.ProfileScreen
+import com.example.flashcards.ui.screens.*
 import com.example.flashcards.ui.viewmodel.*
+import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String, val titleRes: Int, val icon: ImageVector) {
     object Dictionary : Screen("dictionary", R.string.screen_dictionary, Icons.Default.Book)
@@ -35,17 +34,37 @@ fun FlashCardsApp(
     settingsVm: SettingsViewModel,
     apiRepository: WordApiRepository
 ) {
-    val nav = rememberNavController()
+    val auth = FirebaseAuth.getInstance()
+    var userId by remember { mutableStateOf(auth.currentUser?.uid) }
 
+    // Слушаем изменения состояния входа
+    DisposableEffect(Unit) {
+        val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            userId = firebaseAuth.currentUser?.uid
+        }
+        auth.addAuthStateListener(listener)
+        onDispose { auth.removeAuthStateListener(listener) }
+    }
+
+    if (userId == null) {
+        AuthScreen(onAuthSuccess = {})
+        return
+    }
+
+    val nav = rememberNavController()
     val lang = settingsVm.lang.collectAsStateWithLifecycle().value
     LaunchedEffect(lang) {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(lang))
     }
 
     val firestoreRepo = FirestoreRepository()
-    val dictVm: DictionaryViewModel = viewModel(factory = DictionaryViewModelFactory(wordDao, firestoreRepo))
-    val cardsVm: CardsViewModel = viewModel(factory = CardsViewModelFactory(wordDao, apiRepository))
-    val statsFlow = remember { wordDao.learnedCount() }
+    val dictVm: DictionaryViewModel = viewModel(
+        factory = DictionaryViewModelFactory(wordDao, firestoreRepo, userId!!)
+    )
+    val cardsVm: CardsViewModel = viewModel(
+        factory = CardsViewModelFactory(wordDao, apiRepository, userId!!)
+    )
+    val statsFlow = remember { wordDao.learnedCount(userId!!) }
     val learnedCount by statsFlow.collectAsStateWithLifecycle(initialValue = 0)
 
     val backStack by nav.currentBackStackEntryAsState()

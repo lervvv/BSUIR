@@ -24,7 +24,8 @@ sealed class RandomWordState {
 
 class CardsViewModel(
     private val dao: WordDao,
-    private val apiRepository: WordApiRepository
+    private val apiRepository: WordApiRepository,
+    private val userId: String
 ) : ViewModel() {
 
     private val _mode = MutableStateFlow(CardsMode.DICTIONARY)
@@ -33,15 +34,14 @@ class CardsViewModel(
     private val _selectedCategoryForCards = MutableStateFlow<String?>(null)
     val selectedCategoryForCards: StateFlow<String?> = _selectedCategoryForCards.asStateFlow()
 
-    // Автоматически обновляемый список категорий из БД
-    val availableCategories: StateFlow<List<String>> = dao.getCategoriesFlow()
+    val availableCategories: StateFlow<List<String>> = dao.getCategoriesFlow(userId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val notLearned: StateFlow<List<Word>> =
-        dao.notLearnedWords().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        dao.notLearnedWords(userId).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val learned: StateFlow<List<Word>> =
-        dao.learnedWords().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        dao.learnedWords(userId).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val deck: StateFlow<List<Word>> = combine(
         _mode,
@@ -52,7 +52,7 @@ class CardsViewModel(
         if (category == null || category.isBlank()) {
             combine(notLearned, learned) { a, b -> if (a.isNotEmpty()) a else b }
         } else {
-            dao.filterByCategory(category).map { filtered ->
+            dao.filterByCategory(userId, category).map { filtered ->
                 val notLearnedCat = filtered.filter { !it.learned }
                 val learnedCat = filtered.filter { it.learned }
                 if (notLearnedCat.isNotEmpty()) notLearnedCat else learnedCat
@@ -122,7 +122,7 @@ class CardsViewModel(
             val translation = currentState.translation
             if (isKnown) {
                 viewModelScope.launch {
-                    dao.upsert(Word(front = word, back = translation))
+                    dao.upsert(Word(front = word, back = translation, userId = userId))
                 }
             }
             loadRandomWord()
@@ -141,9 +141,10 @@ class CardsViewModel(
 
 class CardsViewModelFactory(
     private val dao: WordDao,
-    private val apiRepository: WordApiRepository
+    private val apiRepository: WordApiRepository,
+    private val userId: String
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return CardsViewModel(dao, apiRepository) as T
+        return CardsViewModel(dao, apiRepository, userId) as T
     }
 }

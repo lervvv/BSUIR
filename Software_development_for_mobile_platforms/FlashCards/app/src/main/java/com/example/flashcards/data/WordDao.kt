@@ -5,43 +5,41 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WordDao {
-    @Query("SELECT * FROM words ORDER BY id DESC")
-    fun allWords(): Flow<List<Word>>
+    @Query("SELECT * FROM words WHERE userId = :userId ORDER BY id DESC")
+    fun allWords(userId: String): Flow<List<Word>>
 
-    @Query("SELECT * FROM words WHERE learned = 0 ORDER BY id DESC")
-    fun notLearnedWords(): Flow<List<Word>>
+    @Query("SELECT * FROM words WHERE learned = 0 AND userId = :userId ORDER BY id DESC")
+    fun notLearnedWords(userId: String): Flow<List<Word>>
 
-    @Query("SELECT * FROM words WHERE learned = 1 ORDER BY id DESC")
-    fun learnedWords(): Flow<List<Word>>
+    @Query("SELECT * FROM words WHERE learned = 1 AND userId = :userId ORDER BY id DESC")
+    fun learnedWords(userId: String): Flow<List<Word>>
 
-    @Query("SELECT COUNT(*) FROM words WHERE learned = 1")
-    fun learnedCount(): Flow<Int>
+    @Query("SELECT COUNT(*) FROM words WHERE learned = 1 AND userId = :userId")
+    fun learnedCount(userId: String): Flow<Int>
 
-    @Query("SELECT * FROM words WHERE front LIKE :query OR back LIKE :query ORDER BY id DESC")
-    fun searchWords(query: String): Flow<List<Word>>
+    @Query("SELECT * FROM words WHERE (front LIKE :query OR back LIKE :query) AND userId = :userId ORDER BY id DESC")
+    fun searchWords(userId: String, query: String): Flow<List<Word>>
 
-    @Query("SELECT * FROM words ORDER BY createdAt DESC")
-    fun sortByDate(): Flow<List<Word>>
+    @Query("SELECT * FROM words WHERE userId = :userId ORDER BY createdAt DESC")
+    fun sortByDate(userId: String): Flow<List<Word>>
 
-    @Query("SELECT * FROM words ORDER BY front ASC")
-    fun sortByAlphabet(): Flow<List<Word>>
+    @Query("SELECT * FROM words WHERE userId = :userId ORDER BY front ASC")
+    fun sortByAlphabet(userId: String): Flow<List<Word>>
 
-    @Query("SELECT * FROM words ORDER BY knownCount ASC")
-    fun sortByProgress(): Flow<List<Word>>
+    @Query("SELECT * FROM words WHERE userId = :userId ORDER BY knownCount ASC")
+    fun sortByProgress(userId: String): Flow<List<Word>>
+
+    @Query("SELECT * FROM words WHERE category = :category AND userId = :userId ORDER BY id DESC")
+    fun filterByCategory(userId: String, category: String): Flow<List<Word>>
+
+    @Query("SELECT DISTINCT category FROM words WHERE userId = :userId")
+    suspend fun getAllCategories(userId: String): List<String>
+
+    @Query("SELECT DISTINCT category FROM words WHERE userId = :userId")
+    fun getCategoriesFlow(userId: String): Flow<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(word: Word)
-
-    // Фильтр по категории
-    @Query("SELECT * FROM words WHERE category = :category ORDER BY id DESC")
-    fun filterByCategory(category: String): Flow<List<Word>>
-
-    // Получить все уникальные категории
-    @Query("SELECT DISTINCT category FROM words")
-    suspend fun getAllCategories(): List<String>
-
-    @Query("SELECT DISTINCT category FROM words")
-    fun getCategoriesFlow(): Flow<List<String>>
 
     @Delete
     suspend fun delete(word: Word)

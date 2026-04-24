@@ -1,17 +1,13 @@
 package com.example.flashcards.ui.screens
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.SortByAlpha
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,7 +31,6 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
     val sortType by vm.sortType.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    // Всплывающие уведомления
     LaunchedEffect(searchQuery) {
         if (searchQuery.isNotBlank()) {
             Toast.makeText(context, context.getString(R.string.toast_search, searchQuery), Toast.LENGTH_SHORT).show()
@@ -91,7 +86,6 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
         )
 
         Column(modifier = Modifier.fillMaxSize().padding(pad)) {
-            // Поле поиска
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { vm.setSearchQuery(it) },
@@ -102,7 +96,6 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Фильтр по категориям
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -122,7 +115,6 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Список слов
             if (words.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.no_words_yet))
@@ -146,15 +138,25 @@ fun DictionaryScreen(vm: DictionaryViewModel, contentPadding: PaddingValues) {
                                         else stringResource(R.string.progress_fmt, w.knownCount),
                                         style = MaterialTheme.typography.labelSmall
                                     )
-                                    // Отображение категории
                                     Text(
                                         text = w.category,
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 }
-                                IconButton(onClick = { vm.deleteWord(w) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = null)
+                                Row {
+                                    IconButton(onClick = {
+                                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(Intent.EXTRA_TEXT, "${w.front} - ${w.back}")
+                                        }
+                                        context.startActivity(Intent.createChooser(shareIntent, "Share"))
+                                    }) {
+                                        Icon(Icons.Default.Share, contentDescription = "Share")
+                                    }
+                                    IconButton(onClick = { vm.deleteWord(w) }) {
+                                        Icon(Icons.Default.Delete, contentDescription = null)
+                                    }
                                 }
                             }
                         }

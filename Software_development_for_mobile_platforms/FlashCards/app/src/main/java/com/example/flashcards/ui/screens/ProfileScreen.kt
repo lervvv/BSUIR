@@ -3,13 +3,20 @@ package com.example.flashcards.ui.screens
 import android.Manifest
 import android.app.Activity
 import android.app.TimePickerDialog
+import android.content.ContentValues
+import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,12 +32,14 @@ import com.example.flashcards.R
 import com.example.flashcards.ui.viewmodel.SettingsViewModel
 import com.example.flashcards.utils.NotificationHelper
 import com.example.flashcards.utils.NotificationScheduler
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.firebase.auth.FirebaseAuth
 import java.io.File
-import java.util.Calendar
-import android.os.Build
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -59,6 +68,9 @@ fun ProfileScreen(
         }
     }
 
+    // Запрос разрешения на камеру
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+
     // Функция сохранения изображения во внутреннее хранилище
     fun saveImageToInternalStorage(uri: Uri): String? {
         val contentResolver = context.contentResolver
@@ -77,7 +89,8 @@ fun ProfileScreen(
         }
     }
 
-    val avatarPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    // Выбор из галереи
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             val path = saveImageToInternalStorage(it)
             if (path != null) {
@@ -86,6 +99,37 @@ fun ProfileScreen(
                 Toast.makeText(context, "Failed to save image", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    // Камера: создаём временный файл и сохраняем фото
+    var photoUri by remember { mutableStateOf<Uri?>(null) }
+
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success && photoUri != null) {
+            val path = saveImageToInternalStorage(photoUri!!)
+            if (path != null) {
+                settingsVm.setAvatarUri(path)
+            } else {
+                Toast.makeText(context, "Failed to save photo", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun takePhoto() {
+        // Создаём временный файл для фото
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val file = File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
+        photoUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            androidx.core.content.FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file
+            )
+        } else {
+            Uri.fromFile(file)
+        }
+        cameraLauncher.launch(photoUri!!)
     }
 
     fun deleteAvatar() {
@@ -139,7 +183,8 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(pad),
+                .padding(pad)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Карточка аватара
@@ -148,10 +193,10 @@ fun ProfileScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Text("Profile picture")
+                    Text(stringResource(R.string.profile_picture))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp) // расстояние между элементами
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         if (avatarUri != null) {
                             val avatarFile = File(avatarUri)
@@ -163,16 +208,30 @@ fun ProfileScreen(
                                     contentScale = ContentScale.Crop
                                 )
                                 Button(onClick = { showDeleteAvatarDialog = true }) {
-                                    Text("Delete")
+                                    Text(stringResource(R.string.delete))
                                 }
                             }
                         }
-                        Button(onClick = { avatarPickerLauncher.launch("image/*") }) {
-                            Text(if (avatarUri == null) "Choose image" else "Change image")
+                    }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(onClick = { galleryLauncher.launch("image/*") }) {
+                            Text(if (avatarUri == null) stringResource(R.string.choose_image) else stringResource(R.string.change_image))
+                        }
+                        Button(
+                            onClick = {
+                                if (cameraPermissionState.status.isGranted) {
+                                    takePhoto()
+                                } else {
+                                    cameraPermissionState.launchPermissionRequest()
+                                }
+                            }
+                        ) {
+                            Text(stringResource(R.string.take_photo))
                         }
                     }
                 }
             }
+
             // Диалог подтверждения удаления аватара
             if (showDeleteAvatarDialog) {
                 AlertDialog(
@@ -305,6 +364,21 @@ fun ProfileScreen(
                             }
                         }
                     )
+                }
+            }
+
+            // Карточка выхода из системы
+            Card(Modifier.fillMaxWidth()) {
+                Button(
+                    onClick = { FirebaseAuth.getInstance().signOut() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text(stringResource(R.string.sign_out))
                 }
             }
         }

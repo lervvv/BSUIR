@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.flashcards"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.flashcards"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35  // поднял до 35
         versionCode = 1
         versionName = "1.0"
     }
@@ -45,7 +45,7 @@ dependencies {
     // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    // AppCompat (для смены языка)
+    // AppCompat
     implementation("androidx.appcompat:appcompat:1.7.0")
 
     // Compose
@@ -71,7 +71,7 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
-    // Coroutines (без дублирования)
+    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
@@ -86,20 +86,22 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
 
-    // WorkManager (уведомления)
+    // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.9.1")
 
-    // Image loading
+    // Image loading (только одна строка)
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
-
-    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }
 
 configurations.all {

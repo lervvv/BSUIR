@@ -11,7 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 
 class DictionaryViewModel(
     private val dao: WordDao,
-    private val firestoreRepo: FirestoreRepository
+    private val firestoreRepo: FirestoreRepository,
+    private val userId: String
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -26,49 +27,36 @@ class DictionaryViewModel(
     private val _categories = MutableStateFlow<List<String>>(emptyList())
     val categories: StateFlow<List<String>> = _categories.asStateFlow()
 
-    // Основной поток слов с учётом поиска, категории и сортировки
+    // Основной поток слов: получаем все слова из Room (они уже синхронизированы с Firestore)
+    private val allWordsFromRoom: Flow<List<Word>> = dao.allWords(userId)
+
+    // Применяем поиск, фильтр и сортировку к потоку из Room
     val words: StateFlow<List<Word>> = combine(
+        allWordsFromRoom,
         _searchQuery,
         _selectedCategory,
         _sortType
-    ) { query, category, sort ->
-        Triple(query, category, sort)
-    }.flatMapLatest { (query, category, sort) ->
-        // Получаем исходный поток слов в зависимости от фильтров
-        val sourceFlow = when {
-            query.isNotBlank() -> fuzzySearch(query, category)
-            category != null -> dao.filterByCategory(category)
-            else -> dao.allWords()
-        }
-        // Применяем сортировку к результату
-        sourceFlow.map { list ->
-            when (sort) {
-                SortType.DATE_DESC -> list.sortedByDescending { it.createdAt }
-                SortType.ALPHABET -> list.sortedBy { it.front.lowercase() }
-                SortType.PROGRESS -> list.sortedBy { it.knownCount }
+    ) { words, query, category, sort ->
+        var filtered = words
+        // Фильтр по поиску (нечёткий)
+        if (query.isNotBlank()) {
+            val lowerQuery = query.lowercase()
+            filtered = filtered.filter { word ->
+                word.front.lowercase().contains(lowerQuery) ||
+                        word.back.lowercase().contains(lowerQuery) ||
+                        levenshteinDistance(word.front.lowercase(), lowerQuery) <= 2
             }
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    init {
-        loadCategories()
-        syncWithFirestore()
-    }
-
-    // Нечёткий поиск с учётом категории
-    private fun fuzzySearch(query: String, category: String?): Flow<List<Word>> = flow {
-        val allWords = if (category != null) {
-            dao.filterByCategory(category).firstOrNull() ?: emptyList()
-        } else {
-            dao.allWords().firstOrNull() ?: emptyList()
+        // Фильтр по категории
+        if (category != null) {
+            filtered = filtered.filter { it.category == category }
         }
-        val lowerQuery = query.lowercase()
-        val result = allWords.filter { word ->
-            word.front.lowercase().contains(lowerQuery) ||
-                    word.back.lowercase().contains(lowerQuery) ||
-                    levenshteinDistance(word.front.lowercase(), lowerQuery) <= 2
+        // Сортировка
+        when (sort) {
+            SortType.DATE_DESC -> filtered.sortedByDescending { it.createdAt }
+            SortType.ALPHABET -> filtered.sortedBy { it.front.lowercase() }
+            SortType.PROGRESS -> filtered.sortedBy { it.knownCount }
         }
-        emit(result)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private fun levenshteinDistance(s1: String, s2: String): Int {
@@ -84,15 +72,36 @@ class DictionaryViewModel(
         return dp[s1.length][s2.length]
     }
 
+    init {
+        // Загружаем начальные категории
+        loadCategories()
+        // Подписываемся на изменения из Firestore и обновляем Room
+        viewModelScope.launch {
+            firestoreRepo.listenForWords(userId).collect { remoteWords ->
+                remoteWords.forEach { remoteWord ->
+                    val existing = dao.allWords(userId).firstOrNull()?.find { it.firestoreId == remoteWord.firestoreId }
+                    if (existing == null) {
+                        dao.upsert(remoteWord)
+                    } else if (remoteWord.lastUpdated > existing.lastUpdated) {
+                        dao.upsert(remoteWord)
+                    }
+                }
+                loadCategories()
+            }
+        }
+    }
+
     fun addWord(front: String, back: String, category: String) {
         viewModelScope.launch {
             val word = Word(
                 front = front.trim(),
                 back = back.trim(),
-                category = category.ifBlank { "Без категории" }
+                category = category.ifBlank { "Без категории" },
+                userId = userId
             )
             dao.upsert(word)
-            firestoreRepo.saveWord(word)?.let { firestoreId ->
+            val firestoreId = firestoreRepo.saveWord(word)
+            if (firestoreId != null) {
                 dao.upsert(word.copy(firestoreId = firestoreId))
             }
             loadCategories()
@@ -123,25 +132,8 @@ class DictionaryViewModel(
 
     private fun loadCategories() {
         viewModelScope.launch {
-            val cats = dao.getAllCategories()
+            val cats = dao.getAllCategories(userId)
             _categories.value = cats
-        }
-    }
-
-    private fun syncWithFirestore() {
-        viewModelScope.launch {
-            try {
-                val remoteWords = firestoreRepo.loadAllWords()
-                remoteWords.forEach { remoteWord ->
-                    val existing = dao.allWords().firstOrNull()?.find { it.firestoreId == remoteWord.firestoreId }
-                    if (existing == null) {
-                        dao.upsert(remoteWord)
-                    } else if (remoteWord.lastUpdated > existing.lastUpdated) {
-                        dao.upsert(remoteWord)
-                    }
-                }
-                loadCategories()
-            } catch (e: Exception) { }
         }
     }
 
@@ -154,9 +146,10 @@ enum class SortType { DATE_DESC, ALPHABET, PROGRESS }
 
 class DictionaryViewModelFactory(
     private val dao: WordDao,
-    private val firestoreRepo: FirestoreRepository
+    private val firestoreRepo: FirestoreRepository,
+    private val userId: String
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return DictionaryViewModel(dao, firestoreRepo) as T
+        return DictionaryViewModel(dao, firestoreRepo, userId) as T
     }
 }

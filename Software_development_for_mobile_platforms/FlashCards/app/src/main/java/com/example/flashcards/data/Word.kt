@@ -13,5 +13,6 @@ data class Word(
     val lastUpdated: Long = System.currentTimeMillis(),
     val knownCount: Int = 0,
     val learned: Boolean = false,
-    val firestoreId: String? = null
+    val firestoreId: String? = null,
+    val userId: String? = null
 )

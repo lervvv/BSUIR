@@ -54,4 +54,11 @@
     <string name="delete_avatar_title">Delete avatar</string>
     <string name="delete_avatar_message">Are you sure you want to delete your avatar?</string>
     <string name="delete">Delete</string>
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_FROM_FIREBASE</string>
+
+    <string name="profile_picture">Profile picture</string>
+    <string name="choose_image">Choose image</string>
+    <string name="change_image">Change image</string>
+    <string name="take_photo">Take photo</string>
+    <string name="sign_out">Sign Out</string>
 </resources>
