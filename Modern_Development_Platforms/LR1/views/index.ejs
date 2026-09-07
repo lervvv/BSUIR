@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Менеджер задач — Лабораторная №1</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; padding: 0 15px; background-color: #f9f9f9; }
+    h1 { color: #333; text-align: center; }
+    form.add-form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 25px; }
+    form.add-form div { margin-bottom: 12px; }
+    label { display: block; font-weight: bold; margin-bottom: 5px; }
+    input[type="text"], input[type="date"], input[type="file"], select { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    
+    .filters { background: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+    .filters a { margin: 0 10px; color: #007bff; text-decoration: none; font-weight: bold; }
+    .filters a.active { text-decoration: underline; color: #000; }
+    
+    .task { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .status-completed { color: green; font-weight: bold; }
+    .status-in-progress { color: orange; font-weight: bold; }
+    .status-pending { color: red; font-weight: bold; }
+    .status-form { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+    .status-form select { width: auto; }
+  </style>
+</head>
+<body>
+
+  <h1>Менеджер задач</h1>
+
+  <!-- Форма отправки данных на сервер (POST /tasks) с файлом -->
+  <form action="/tasks" method="POST" enctype="multipart/form-data" class="add-form">
+    <h2>Новая задача</h2>
+    <div>
+      <label for="title">Название задачи:</label>
+      <input type="text" id="title" name="title" placeholder="Введите название..." required>
+    </div>
+    <div>
+      <label for="dueDate">Ожидаемая дата завершения:</label>
+      <input type="date" id="dueDate" name="dueDate" required>
+    </div>
+    <div>
+      <label for="attachment">Прикрепить файл:</label>
+      <input type="file" id="attachment" name="attachment">
+    </div>
+    <button type="submit">Создать задачу</button>
+  </form>
+
+  <!-- Блок фильтрации задач -->
+  <div class="filters">
+    <span><strong>Фильтр по статусу:</strong></span>
+    <a href="/?filter=all" class="<%= currentFilter === 'all' ? 'active' : '' %>">Все</a> |
+    <a href="/?filter=pending" class="<%= currentFilter === 'pending' ? 'active' : '' %>">Ожидают</a> |
+    <a href="/?filter=in-progress" class="<%= currentFilter === 'in-progress' ? 'active' : '' %>">В процессе</a> |
+    <a href="/?filter=completed" class="<%= currentFilter === 'completed' ? 'active' : '' %>">Завершены</a>
+  </div>
+
+  <!-- Отрисовка списка задач (Server-Side Rendering) -->
+  <% if (tasks.length === 0) { %>
+    <p style="text-align: center; color: #666;">Задач не найдено.</p>
+  <% } else { %>
+    <% tasks.forEach(task => { %>
+      <div class="task">
+        <h3><%= task.title %></h3>
+        <p><strong>Дата завершения:</strong> <%= task.dueDate %></p>
+        <p>
+          <strong>Текущий статус:</strong> 
+          <span class="status-<%= task.status %>">
+            <%= task.status === 'pending' ? 'Ожидает' : task.status === 'in-progress' ? 'В процессе' : 'Завершено' %>
+          </span>
+        </p>
+
+        <% if (task.file) { %>
+          <p>📎 <strong>Прикрепленный файл:</strong> <a href="/uploads/<%= task.file %>" target="_blank"><%= task.file %></a></p>
+        <% } %>
+
+        <!-- Форма для смены статуса (POST /tasks/:id/status) -->
+        <form action="/tasks/<%= task.id %>/status" method="POST" class="status-form">
+          <label>Сменить статус:</label>
+          <select name="status">
+            <option value="pending" <%= task.status === 'pending' ? 'selected' : '' %>>Ожидает</option>
+            <option value="in-progress" <%= task.status === 'in-progress' ? 'selected' : '' %>>В процессе</option>
+            <option value="completed" <%= task.status === 'completed' ? 'selected' : '' %>>Завершено</option>
+          </select>
+          <button type="submit">Сохранить</button>
+        </form>
+      </div>
+    <% }) %>
+  <% } %>
+
+</body>
+</html>
