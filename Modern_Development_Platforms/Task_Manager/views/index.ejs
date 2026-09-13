@@ -4,32 +4,47 @@
   <meta charset="UTF-8">
   <title>Менеджер задач — Лабораторная №1</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; padding: 0 15px; background-color: #f9f9f9; }
+    body { font-family: Arial, sans-serif; max-width: 850px; margin: 30px auto; padding: 0 15px; background-color: #f9f9f9; }
     h1 { color: #333; text-align: center; }
-    form.add-form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 25px; }
-    form.add-form div { margin-bottom: 12px; }
+    form.add-form, details.edit-form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 25px; }
+    form div { margin-bottom: 12px; }
     label { display: block; font-weight: bold; margin-bottom: 5px; }
     input[type="text"], input[type="date"], input[type="file"], select { width: 100%; padding: 8px; box-sizing: border-box; }
     button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
     button:hover { background-color: #0056b3; }
     
-    .filters { background: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
-    .filters a { margin: 0 10px; color: #007bff; text-decoration: none; font-weight: bold; }
-    .filters a.active { text-decoration: underline; color: #000; }
+    /* Обновленная панель управления */
+    .controls { background: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .control-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .control-row:last-child { margin-bottom: 0; }
+    .control-label { min-width: 100px; font-weight: bold; color: #555; }
+    
+    .filters a, .sorts a { color: #007bff; text-decoration: none; font-weight: bold; padding: 3px 8px; border-radius: 4px; }
+    .filters a.active, .sorts a.active { background-color: #007bff; color: white; text-decoration: none; }
     
     .task { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     .status-completed { color: green; font-weight: bold; }
     .status-in-progress { color: orange; font-weight: bold; }
     .status-pending { color: red; font-weight: bold; }
-    .status-form { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+    .priority-high { color: #d9534f; font-weight: bold; }
+    .priority-medium { color: #f0ad4e; font-weight: bold; }
+    .priority-low { color: #5bc0de; font-weight: bold; }
+    
+    .task-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+    .status-form { display: flex; gap: 10px; align-items: center; }
     .status-form select { width: auto; }
+    .btn-delete { background-color: #dc3545; }
+    .btn-delete:hover { background-color: #c82333; }
+    
+    details summary { cursor: pointer; color: #007bff; font-weight: bold; margin-top: 10px; }
+    .file-box { background: #f0f0f0; padding: 8px; border-radius: 4px; margin: 10px 0; }
   </style>
 </head>
 <body>
 
   <h1>Менеджер задач</h1>
 
-  <!-- Форма отправки данных на сервер (POST /tasks) с файлом -->
+  <!-- Форма создания задачи -->
   <form action="/tasks" method="POST" enctype="multipart/form-data" class="add-form">
     <h2>Новая задача</h2>
     <div>
@@ -41,22 +56,41 @@
       <input type="date" id="dueDate" name="dueDate" required>
     </div>
     <div>
+      <label for="priority">Приоритет:</label>
+      <select id="priority" name="priority">
+        <option value="low">Низкий</option>
+        <option value="medium" selected>Средний</option>
+        <option value="high">Высокий</option>
+      </select>
+    </div>
+    <div>
       <label for="attachment">Прикрепить файл:</label>
       <input type="file" id="attachment" name="attachment">
     </div>
     <button type="submit">Создать задачу</button>
   </form>
 
-  <!-- Блок фильтрации задач -->
-  <div class="filters">
-    <span><strong>Фильтр по статусу:</strong></span>
-    <a href="/?filter=all" class="<%= currentFilter === 'all' ? 'active' : '' %>">Все</a> |
-    <a href="/?filter=pending" class="<%= currentFilter === 'pending' ? 'active' : '' %>">Ожидают</a> |
-    <a href="/?filter=in-progress" class="<%= currentFilter === 'in-progress' ? 'active' : '' %>">В процессе</a> |
-    <a href="/?filter=completed" class="<%= currentFilter === 'completed' ? 'active' : '' %>">Завершены</a>
+  <!-- Новый удобный блок с фильтрами (1-я строка) и сортировками (2-я строка) -->
+  <div class="controls">
+    <!-- Строка 1: Фильтрация -->
+    <div class="control-row filters">
+      <span class="control-label">Фильтр:</span>
+      <a href="/?filter=all&sort=<%= currentSort %>" class="<%= currentFilter === 'all' ? 'active' : '' %>">Все</a>
+      <a href="/?filter=pending&sort=<%= currentSort %>" class="<%= currentFilter === 'pending' ? 'active' : '' %>">Ожидают</a>
+      <a href="/?filter=in-progress&sort=<%= currentSort %>" class="<%= currentFilter === 'in-progress' ? 'active' : '' %>">В процессе</a>
+      <a href="/?filter=completed&sort=<%= currentSort %>" class="<%= currentFilter === 'completed' ? 'active' : '' %>">Завершены</a>
+    </div>
+
+    <!-- Строка 2: Сортировка -->
+    <div class="control-row sorts">
+      <span class="control-label">Сортировка:</span>
+      <a href="/?filter=<%= currentFilter %>&sort=newest" class="<%= currentSort === 'newest' ? 'active' : '' %>">Сначала новые</a>
+      <a href="/?filter=<%= currentFilter %>&sort=oldest" class="<%= currentSort === 'oldest' ? 'active' : '' %>">Сначала старые</a>
+      <a href="/?filter=<%= currentFilter %>&sort=priority" class="<%= currentSort === 'priority' ? 'active' : '' %>">По приоритету (High ➔ Low)</a>
+    </div>
   </div>
 
-  <!-- Отрисовка списка задач (Server-Side Rendering) -->
+  <!-- Список задач -->
   <% if (tasks.length === 0) { %>
     <p style="text-align: center; color: #666;">Задач не найдено.</p>
   <% } else { %>
@@ -65,6 +99,12 @@
         <h3><%= task.title %></h3>
         <p><strong>Дата завершения:</strong> <%= task.dueDate %></p>
         <p>
+          <strong>Приоритет:</strong> 
+          <span class="priority-<%= task.priority %>">
+            <%= task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий' %>
+          </span>
+        </p>
+        <p>
           <strong>Текущий статус:</strong> 
           <span class="status-<%= task.status %>">
             <%= task.status === 'pending' ? 'Ожидает' : task.status === 'in-progress' ? 'В процессе' : 'Завершено' %>
@@ -72,19 +112,65 @@
         </p>
 
         <% if (task.file) { %>
-          <p>📎 <strong>Прикрепленный файл:</strong> <a href="/uploads/<%= task.file %>" target="_blank"><%= task.file %></a></p>
+          <div class="file-box">
+            📎 <strong>Файл:</strong> <a href="/uploads/<%= task.file %>" target="_blank"><%= task.file %></a>
+          </div>
         <% } %>
 
-        <!-- Форма для смены статуса (POST /tasks/:id/status) -->
-        <form action="/tasks/<%= task.id %>/status" method="POST" class="status-form">
-          <label>Сменить статус:</label>
-          <select name="status">
-            <option value="pending" <%= task.status === 'pending' ? 'selected' : '' %>>Ожидает</option>
-            <option value="in-progress" <%= task.status === 'in-progress' ? 'selected' : '' %>>В процессе</option>
-            <option value="completed" <%= task.status === 'completed' ? 'selected' : '' %>>Завершено</option>
-          </select>
-          <button type="submit">Сохранить</button>
-        </form>
+        <div class="task-actions">
+          <!-- Быстрая смена статуса -->
+          <form action="/tasks/<%= task.id %>/status" method="POST" class="status-form">
+            <select name="status">
+              <option value="pending" <%= task.status === 'pending' ? 'selected' : '' %>>Ожидает</option>
+              <option value="in-progress" <%= task.status === 'in-progress' ? 'selected' : '' %>>В процессе</option>
+              <option value="completed" <%= task.status === 'completed' ? 'selected' : '' %>>Завершено</option>
+            </select>
+            <button type="submit">Сохранить статус</button>
+          </form>
+
+          <!-- Удаление всей задачи -->
+          <form action="/tasks/<%= task.id %>/delete" method="POST" style="margin:0;">
+            <button type="submit" class="btn-delete">Удалить</button>
+          </form>
+        </div>
+
+        <!-- Выпадающая форма редактирования -->
+        <details style="margin-top: 10px;">
+          <summary>Редактировать задачу / Файл</summary>
+          <form action="/tasks/<%= task.id %>/edit" method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
+            <div>
+              <label>Название:</label>
+              <input type="text" name="title" value="<%= task.title %>" required>
+            </div>
+            <div>
+              <label>Дата завершения:</label>
+              <input type="date" name="dueDate" value="<%= task.dueDate %>" required>
+            </div>
+            <div>
+              <label>Приоритет:</label>
+              <select name="priority">
+                <option value="low" <%= task.priority === 'low' ? 'selected' : '' %>>Низкий</option>
+                <option value="medium" <%= task.priority === 'medium' ? 'selected' : '' %>>Средний</option>
+                <option value="high" <%= task.priority === 'high' ? 'selected' : '' %>>Высокий</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Заменить или прикрепить файл:</label>
+              <input type="file" name="attachment">
+            </div>
+
+            <% if (task.file) { %>
+              <div style="margin: 8px 0;">
+                <label style="font-weight: normal; color: #dc3545;">
+                  <input type="checkbox" name="delete_file" value="true" style="width: auto;"> Удалить текущий файл без замены
+                </label>
+              </div>
+            <% } %>
+
+            <button type="submit" style="background-color: #28a745;">Сохранить изменения</button>
+          </form>
+        </details>
       </div>
     <% }) %>
   <% } %>
