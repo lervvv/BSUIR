@@ -1,0 +1,36 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Modern_Development_Platforms/Task_Manager
+
+    steps:
+      - name: Чтение репозитория
+        uses: actions/checkout@v6
+
+      - name: Установка Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: Modern_Development_Platforms/Task_Manager/package-lock.json
+
+      - name: Установка зависимостей
+        run: npm ci
+
+      - name: Проверка синтаксиса JS
+        run: node --check app.js
