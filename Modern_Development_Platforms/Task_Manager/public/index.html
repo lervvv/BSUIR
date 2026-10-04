@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Менеджер задач — SPA с RBAC</title>
+  <style>
+    :root { 
+      --bg-color: #f4f4f6; 
+      --card-bg: #ffffff; 
+      --text-main: #212529; 
+      --border-color: #e0e0e0; 
+      --btn-primary: #343a40; 
+      --btn-active: #0d6efd;
+    }
+    body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-main); max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; }
+    .btn { background: var(--btn-primary); color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.2s ease; }
+    .btn:hover { opacity: 0.9; }
+    .btn-danger { background: #dc3545; }
+    .btn-secondary { background: #6c757d; }
+    
+    /* Стили навигации и подсвечивания активной вкладки */
+    .nav { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+    .nav .btn.active {
+      background-color: var(--btn-active);
+      box-shadow: 0 2px 6px rgba(13, 110, 253, 0.4);
+      font-weight: bold;
+    }
+
+    .hidden { display: none !important; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
+    th { background: #e9ecef; }
+    
+    /* Чекбокс показа/скрытия пароля */
+    .show-password-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88em;
+      font-weight: normal;
+      margin-top: 6px;
+      cursor: pointer;
+      user-select: none;
+      color: #555;
+    }
+    .show-password-label input { width: auto; margin: 0; cursor: pointer; }
+
+    .link-btn { background: none; border: none; color: #0d6efd; text-decoration: underline; cursor: pointer; padding: 0; font-size: 0.9em; margin-top: 8px; display: inline-block; }
+
+    /* Высплывающие уведомления (Тосты) */
+    #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 14px; position: fixed; z-index: 1000; right: 30px; bottom: 30px; }
+    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+    .task-item { border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; margin-bottom: 12px; background: #fafafa; }
+    .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .task-title { margin: 0; font-size: 1.1em; }
+    .badge { background: #e2e3e5; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
+    .task-meta { display: flex; gap: 15px; font-size: 0.9em; color: #555; margin-bottom: 10px; }
+    .task-actions { display: flex; gap: 8px; }
+
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 999; }
+    .modal-content { background: white; border-radius: 8px; padding: 25px; width: 100%; max-width: 500px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+  </style>
+</head>
+<body>
+
+  <!-- Тост уведомления -->
+  <div id="toast"></div>
+
+  <!-- Блок Входа и Авторизации -->
+  <div id="authSection" class="card">
+    <h2>Вход в систему</h2>
+    <form id="loginForm" autocomplete="off">
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" id="loginEmail" required placeholder="admin@example.com" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Пароль:</label>
+        <input type="password" id="loginPassword" required autocomplete="new-password">
+        <label class="show-password-label">
+          <input type="checkbox" class="show-pwd-checkbox" onchange="togglePassword('loginPassword', this)"> Показать пароль
+        </label>
+      </div>
+      <button type="submit" class="btn">Войти</button>
+      <br>
+      <button type="button" class="link-btn" onclick="toggleForgotForm(true)">Забыли пароль?</button>
+    </form>
+
+    <!-- Форма восстановления доступа (Запрос кода) -->
+    <form id="forgotForm" class="hidden" autocomplete="off" style="margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px;">
+      <h3>Восстановление доступа</h3>
+      <div class="form-group">
+        <label>Введите ваш Email:</label>
+        <input type="email" id="forgotEmail" required placeholder="user@example.com" autocomplete="off">
+      </div>
+      <button type="submit" class="btn">Запросить код сброса</button>
+      <button type="button" class="btn btn-secondary" onclick="toggleForgotForm(false)">Отмена</button>
+    </form>
+
+    <!-- Форма сброса пароля (Ввод кода и нового пароля) -->
+    <form id="resetForm" class="hidden" autocomplete="off" style="margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px;">
+      <h3>Установка нового пароля</h3>
+      <div class="form-group"><label>Email:</label><input type="email" id="resetEmail" required autocomplete="off"></div>
+      <div class="form-group"><label>Код сброса из консоли сервера:</label><input type="text" id="resetToken" required autocomplete="off"></div>
+      <div class="form-group">
+        <label>Новый пароль:</label>
+        <input type="password" id="resetNewPassword" required autocomplete="new-password">
+        <label class="show-password-label">
+          <input type="checkbox" class="show-pwd-checkbox" onchange="togglePassword('resetNewPassword', this)"> Показать пароль
+        </label>
+      </div>
+      <button type="submit" class="btn">Сбросить пароль</button>
+    </form>
+  </div>
+
+  <!-- Главная Рабочая Область -->
+  <div id="appSection" class="hidden">
+    <!-- Кнопки навигации по вкладкам -->
+    <div class="nav">
+      <button class="btn" onclick="showTab('tasksTab')" id="navTasks">Задачи</button>
+      <button class="btn" onclick="showTab('profileTab')" id="navProfile">Личный кабинет</button>
+      <button class="btn" onclick="showTab('adminTab')" id="navAdmin">Управление пользователями</button>
+      <button class="btn" onclick="showTab('auditTab')" id="navAudit">Логи аудита</button>
+      <button class="btn btn-danger" onclick="logout()" style="margin-left: auto;">Выход</button>
+    </div>
+
+    <!-- Вкладка: Задачи (Только роли 'user') -->
+    <div id="tasksTab" class="tab-content hidden">
+      <div class="card">
+        <h3>Новая задача</h3>
+        <form id="createForm">
+          <div class="form-group"><label>Название:</label><input type="text" id="createTitle" required></div>
+          <div class="form-group"><label>Дата завершения:</label><input type="date" id="createDueDate" required></div>
+          <div class="form-group">
+            <label>Приоритет:</label>
+            <select id="createPriority">
+              <option value="low">Низкий</option>
+              <option value="medium" selected>Средний</option>
+              <option value="high">Высокий</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Файл:</label><input type="file" id="createFile"></div>
+          <button type="submit" class="btn">Создать</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Мои задачи</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <select id="filterStatus">
+            <option value="all">Все статусы</option>
+            <option value="pending">Ожидает</option>
+            <option value="in-progress">В процессе</option>
+            <option value="completed">Завершено</option>
+          </select>
+          <select id="filterPriority">
+            <option value="all">Все приоритеты</option>
+            <option value="low">Низкий</option>
+            <option value="medium">Средний</option>
+            <option value="high">Высокий</option>
+          </select>
+          <select id="sortBy">
+            <option value="newest">Новые</option>
+            <option value="date_asc">Ближайшие по дате</option>
+            <option value="date_desc">Дальние по дате</option>
+            <option value="priority_desc">Сначала высокий приоритет</option>
+          </select>
+          <input type="text" id="searchInput" placeholder="Поиск по названию...">
+        </div>
+        <div id="taskList"></div>
+      </div>
+    </div>
+
+    <!-- Вкладка: Личный Кабинет -->
+    <div id="profileTab" class="tab-content hidden">
+      <div class="card">
+        <h3>Информация о пользователе</h3>
+        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+        <p><strong>Роль в системе:</strong> <span id="profileRole"></span></p>
+      </div>
+      <div class="card">
+        <h3>Смена пароля</h3>
+        <form id="passwordForm" autocomplete="off">
+          <div class="form-group">
+            <label>Старый пароль:</label>
+            <input type="password" id="oldPassword" required autocomplete="new-password">
+            <label class="show-password-label">
+              <input type="checkbox" class="show-pwd-checkbox" onchange="togglePassword('oldPassword', this)"> Показать пароль
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Новый пароль:</label>
+            <input type="password" id="newPassword" required autocomplete="new-password">
+            <label class="show-password-label">
+              <input type="checkbox" class="show-pwd-checkbox" onchange="togglePassword('newPassword', this)"> Показать пароль
+            </label>
+          </div>
+          <button type="submit" class="btn">Изменить пароль</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Мои активные сессии</h3>
+        <div id="sessionsList"></div>
+      </div>
+    </div>
+
+    <!-- Вкладка: Управление пользователями (Только роли 'admin') -->
+    <div id="adminTab" class="tab-content hidden">
+      <div class="card">
+        <h3>Создание нового пользователя</h3>
+        <form id="createUserForm" autocomplete="off">
+          <div class="form-group">
+            <label>Email пользователя:</label>
+            <input type="email" id="newUserEmail" required placeholder="user@example.com" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Пароль:</label>
+            <input type="password" id="newUserPassword" required autocomplete="new-password">
+            <label class="show-password-label">
+              <input type="checkbox" class="show-pwd-checkbox" onchange="togglePassword('newUserPassword', this)"> Показать пароль
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Роль:</label>
+            <select id="newUserRole">
+              <option value="user">Пользователь</option>
+              <option value="admin">Администратор</option>
+              <option value="auditor">Аудитор</option>
+            </select>
+          </div>
+          <button type="submit" class="btn">Зарегистрировать пользователя</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Управление пользователями</h3>
+        <div id="usersList"></div>
+      </div>
+    </div>
+
+    <!-- Вкладка: Логи аудита (Только роли 'auditor') -->
+    <div id="auditTab" class="tab-content hidden">
+      <div class="card">
+        <h3>Логи аудита</h3>
+        <a class="btn" href="/api/audit/logs/export" target="_blank" style="margin-bottom: 15px;">Выгрузить JSON</a>
+        <div id="auditLogsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно редактирования задачи -->
+  <div id="editModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h3>Редактирование задачи</h3>
+      <form id="editForm">
+        <input type="hidden" id="editId">
+        <div class="form-group"><label>Название:</label><input type="text" id="editTitle" required></div>
+        <div class="form-group"><label>Дата завершения:</label><input type="date" id="editDueDate" required></div>
+        <div class="form-group">
+          <label>Приоритет:</label>
+          <select id="editPriority">
+            <option value="low">Низкий</option>
+            <option value="medium">Средний</option>
+            <option value="high">Высокий</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Статус:</label>
+          <select id="editStatus">
+            <option value="pending">Ожидает</option>
+            <option value="in-progress">В процессе</option>
+            <option value="completed">Завершено</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Заменить файл:</label><input type="file" id="editFile"></div>
+        <div class="form-group" id="deleteFileContainer" style="display:none;">
+          <label><input type="checkbox" id="editDeleteFile" style="width:auto;"> Удалить прикрепленный файл</label>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+          <button type="submit" class="btn">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

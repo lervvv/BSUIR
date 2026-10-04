@@ -1,19 +1,31 @@
 {
-  "name": "lr1",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "task-manager-rbac",
+  "version": "2.0.0",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "ejs": "^6.0.1",
+    "bcryptjs": "^2.4.3",
+    "connect-sqlite3": "^0.9.18",
     "express": "^5.2.1",
-    "multer": "^2.3.0",
-    "sqlite": "^5.1.1",
+    "express-session": "^1.19.0",
+    "multer": "^2.4.0",
     "sqlite3": "^6.0.1"
   },
-  "description": ""
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.9"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
 }
